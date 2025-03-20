@@ -10,7 +10,7 @@
           <li><a href="">勤怠一覧</a></li>
           <li><a href="">申請</a></li>
           <li>
-            <form action="/logout" method="post">
+            <form action="{{ route('staff.logout') }}" method="post">
               @csrf
               <button class="header__logout">ログアウト</button>
             </form>

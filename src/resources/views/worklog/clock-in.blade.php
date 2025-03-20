@@ -9,7 +9,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.header')
+@include('components.staff-header')
 <h1>出勤前
 </h1>
 @endsection

@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-@include('components.header')
+@include('components.staff-header')
 <div class="mail_notice--div">
     <div class="mail_notice--header">
         <p class="notice_header--p">メール認証はお済みですか？</p>

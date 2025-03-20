@@ -24,7 +24,7 @@ class StaffLoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('staff')->attempt($credentials)) {
-            return redirect()->route('index'); // 管理者ダッシュボードへ
+            return redirect()->route('staff.index');
         }
 
         return back()->withErrors(['email' => 'ログインに失敗しました']);
@@ -32,8 +32,8 @@ class StaffLoginController extends Controller
 
     public function logout()
     {
-        Auth::guard('admin')->logout();
-        return redirect()->route('auth.login'); // ログアウト後にログイン画面へ
+        Auth::guard('staff')->logout();
+        return redirect()->route('staff.logout'); // ログアウト後にログイン画面へ
     }
 
     public function store(
