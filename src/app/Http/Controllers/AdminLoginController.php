@@ -20,15 +20,15 @@ class AdminLoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.admin-index'); // 管理者ダッシュボードへ
+            return redirect()->route('admin.index'); // 管理者ダッシュボードへ
         }
 
-        return back()->withErrors(['email' => 'ログインに失敗しました']);
+        return back()->withErrors(['email' => 'ログイン情報が登録されていません']);
     }
 
     public function logout()
     {
         Auth::guard('admin')->logout();
-        return redirect()->route('admin.admin-login'); // ログアウト後にログイン画面へ
+        return redirect()->route('admin.login'); // ログアウト後にログイン画面へ
     }
 }

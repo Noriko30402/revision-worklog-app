@@ -27,7 +27,7 @@ class StaffLoginController extends Controller
             return redirect()->route('staff.index');
         }
 
-        return back()->withErrors(['email' => 'ログインに失敗しました']);
+        return back()->withErrors(['email' => 'ログイン情報が登録されていません']);
     }
 
     public function logout()

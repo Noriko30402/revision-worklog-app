@@ -9,7 +9,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.header')
+@include('components.admin-header')
 <form action="/admin/login" method="post" class="authenticate center" novalidate>
     @csrf
     <h1 class="page__title">管理者ログイン</h1>

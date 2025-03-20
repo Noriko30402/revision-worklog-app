@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\StaffLoginController;
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\AdminController;
 use App\Http\Requests\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -20,14 +21,23 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::prefix('admin')->name('admin.')->group(function () {
+
+// 管理者
+Route::prefix('admin')->group(function () {
 Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/login', [AdminLoginController::class, 'login']);
 Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 });
 
+Route::middleware(['auth:admin', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+});
 
-// 🚀 スタッフログインルート
+
+
+
+// スタッフ
 Route::prefix('staff')->group(function () {
 Route::get('/login', [StaffLoginController::class, 'showLoginForm'])->name('staff.login');
 Route::post('/login', [StaffLoginController::class, 'login']);
@@ -38,8 +48,6 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
     Route::post('/logout', [WorkController::class, 'logout'])->name('staff.logout');
 });
 
-
-// Route::get('/index', [WorkController::class, 'index'])->name('index');
 
 Route::get('/register', [StaffLoginController::class, 'register']);
 Route::post('/register', [StaffLoginController::class, 'store']);

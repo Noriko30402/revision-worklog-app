@@ -9,7 +9,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.header')
+@include('components.admin-header')
 
 <h1>管理者画面</h1>
 @endsection
