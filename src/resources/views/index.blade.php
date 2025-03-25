@@ -1,15 +1,15 @@
 @extends('layouts.default')
 
-@section('title','ログイン')
+@section('title','勤怠一覧')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('/css/authentication.css')  }}">
+<link rel="stylesheet" href="{{ asset('/css/worklog.css')  }}">
 @endsection
 
 <!-- 本体 -->
 @section('content')
 
 @include('components.staff-header')
-<h1>出勤前
-</h1>
+
+
 @endsection

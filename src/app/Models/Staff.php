@@ -14,7 +14,7 @@ class Staff extends Authenticatable
 
     protected $table = 'staffs';
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password','status'];
 
     protected $hidden = [
         'password',
@@ -30,6 +30,16 @@ class Staff extends Authenticatable
         static::created(function ($user) {
             $user->sendEmailVerificationNotification();
         });
+    }
+
+    public function works()
+    {
+        return $this->hasMany(Work::class);
+    }
+
+    public function rests()
+    {
+        return $this->hasMany(Rest::class);
     }
 
 

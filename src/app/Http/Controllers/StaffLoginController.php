@@ -24,7 +24,7 @@ class StaffLoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('staff')->attempt($credentials)) {
-            return redirect()->route('staff.index');
+            return redirect()->route('staff.attendance');
         }
 
         return back()->withErrors(['email' => 'ログイン情報が登録されていません']);
@@ -33,7 +33,7 @@ class StaffLoginController extends Controller
     public function logout()
     {
         Auth::guard('staff')->logout();
-        return redirect()->route('staff.logout'); // ログアウト後にログイン画面へ
+        return redirect()->route('staff.login');
     }
 
     public function store(
@@ -47,7 +47,10 @@ class StaffLoginController extends Controller
 
     public function register()
     {
-        return view('auth.register'); // 管理者ログイン画面を表示
+        return view('auth.register');
     }
 
 }
+
+
+

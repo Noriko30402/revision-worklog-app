@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorksTable extends Migration
+class CreateRestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateWorksTable extends Migration
      */
     public function up()
     {
-        Schema::create('works', function (Blueprint $table) {
+        Schema::create('rests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('staff_id')->constrained('staffs')->onDelete('cascade');
             $table->string('date');
-            $table->string('clock_in')->nullable()->default(null);
-            $table->string('clock_out')->nullable();
-            $table->integer('status')->nullable();
+            $table->string('rest_in')->nullable()->default(null);
+            $table->string('rest_out')->nullable();
+            $table->foreignId('work_id')->constrained('works')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateWorksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('works');
+        Schema::dropIfExists('rests');
     }
 }

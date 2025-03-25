@@ -44,8 +44,9 @@ Route::post('/login', [StaffLoginController::class, 'login']);
 });
 
 Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function () {
-    Route::get('/index', [WorkController::class, 'index'])->name('staff.index');
-    Route::post('/logout', [WorkController::class, 'logout'])->name('staff.logout');
+    Route::get('/attendance', [WorkController::class, 'attendance'])->name('staff.attendance');
+    Route::post('/logout', [StaffLoginController::class, 'logout'])->name('staff.logout');
+    Route::post('/work',[WorkController::class,'work'])->name('work');
 });
 
 
@@ -65,5 +66,5 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     session()->forget('unauthenticated_user');
-    return redirect('/staff/index');
+    return redirect('staff/attendance');
 })->middleware('auth:staff')->name('verification.verify');
