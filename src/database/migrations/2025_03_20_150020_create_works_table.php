@@ -17,8 +17,9 @@ class CreateWorksTable extends Migration
             $table->id();
             $table->foreignId('staff_id')->constrained('staffs')->onDelete('cascade');
             $table->string('date');
-            $table->string('clock_in')->nullable()->default(null);
-            $table->string('clock_out')->nullable();
+            $table->time('clock_in')->nullable()->default(null);
+            $table->time('clock_out')->nullable();
+            $table->time('total_work_time')->nullable();
             $table->integer('status')->nullable();
             $table->timestamps();
         });

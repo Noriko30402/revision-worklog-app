@@ -17,8 +17,9 @@ class CreateRestsTable extends Migration
             $table->id();
             $table->foreignId('staff_id')->constrained('staffs')->onDelete('cascade');
             $table->string('date');
-            $table->string('rest_in')->nullable()->default(null);
-            $table->string('rest_out')->nullable();
+            $table->time('rest_in')->nullable()->default(null);
+            $table->time('rest_out')->nullable();
+            $table->time('total_rest_time')->nullable();
             $table->foreignId('work_id')->constrained('works')->onDelete('cascade');
             $table->timestamps();
         });

@@ -7,6 +7,7 @@ use App\Http\Controllers\WorkController;
 use App\Http\Controllers\AdminController;
 use App\Http\Requests\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\IndexController;
 
 
 
@@ -46,7 +47,9 @@ Route::post('/login', [StaffLoginController::class, 'login']);
 Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function () {
     Route::get('/attendance', [WorkController::class, 'attendance'])->name('staff.attendance');
     Route::post('/logout', [StaffLoginController::class, 'logout'])->name('staff.logout');
+    Route::get('/work',[WorkController::class,'work'])->name('work');
     Route::post('/work',[WorkController::class,'work'])->name('work');
+    Route::get('/index',[IndexController::class,'index'])->name('index');
 });
 
 

@@ -10,6 +10,7 @@ class Work extends Model
     use HasFactory;
 
     protected $fillable = ['staff_id' ,' clock_in','clock_out','date','status'];
+    protected $dates = ['date'];
 
     public function staff()
     {
