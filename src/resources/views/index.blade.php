@@ -14,10 +14,6 @@
 <div class="container">
 <h1>{{ $currentMonth}}</h1>
 
-@if($works->isEmpty())
-  <p>この月には勤務記録がありません。</p>
-@else
-
   <table class="table">
     <thead>
       <tr>
@@ -31,21 +27,50 @@
     </thead>
 
     <tbody>
-      @foreach ($works as $work)
-          <tr>
-            <td>{{ \Carbon\Carbon::parse($work->date)->format('Y年m月d日') }}</td>
-            <td>{{ $work ->clock_in }}</td>
-            <td>{{ $work->clock_out }}</td>
-          </tr>
-      @endforeach
+      @foreach($dates as $date)
+        <tr>
+          <td>{{ $date->isoFormat('M/D（ddd）') }}</td>
 
-      @foreach ($rests as $rest)
-          <tr>
-            <td>{{ $rest->getFormattedRestTime() }}</td>
-          </tr>
-      @endforeach
-    </tbody>
+        <!-- 出勤時間と退勤時間 -->
+          @php
+            $workForThisDate = $worksByDate[$date->toDateString()] ?? null;
+          @endphp
+
+          @if ($workForThisDate)
+            <td>{{ \Carbon\Carbon::parse($workForThisDate->clock_in)->format('H:i') }}</td>
+            <td>{{ \Carbon\Carbon::parse($workForThisDate->clock_out)->format('H:i') }}</td>
+          @else
+            <td>-</td>
+            <td>-</td>
+          @endif
+
+        <!-- 休憩時間 -->
+          @php
+            $restForThisDate = $restsByDate[$date->toDateString()] ?? null;
+          @endphp
+
+          @if ($restForThisDate)
+            <td>{{ \Carbon\Carbon::parse($restForThisDate->total_rest_time)->format('H:i') }}</td>
+          @else
+            <td>-</td>
+          @endif
+
+        <!-- 勤務時間 -->
+          @if ($workForThisDate)
+            <td>{{ \Carbon\Carbon::parse($workForThisDate->total_work_time)->format('H:i') }}</td>
+          @else
+            <td>-</td>
+          @endif
+
+        @if ($workForThisDate)
+          <td><a  href={{ route('detail')}}>詳細</a></td>
+        @else
+          <td>-</td>
+        @endif
+
+        </tr>
+    @endforeach
+  </tbody>
   </table>
-</div>
-@endif
+  </div>
 @endsection

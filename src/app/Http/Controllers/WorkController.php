@@ -99,8 +99,8 @@ class WorkController extends Controller
      // 勤務終了処理
     private function endWork($lastWork, $staff, $now_time, $now_date)
     {
-        $clock_in = Carbon::parse($lastWork->rest_in);
-        $clock_out = Carbon::parse($lastWork->rest_out);
+        $clock_in = Carbon::parse($lastWork->clock_in);
+        $clock_out = Carbon::parse($lastWork->clock_out);
 
         if ($lastWork && $lastWork->date->isSameDay($now_date) && empty($lastWork->clock_out)) {
             $lastWork->clock_out = $now_time;

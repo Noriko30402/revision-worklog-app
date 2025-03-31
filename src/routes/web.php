@@ -50,6 +50,7 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
     Route::get('/work',[WorkController::class,'work'])->name('work');
     Route::post('/work',[WorkController::class,'work'])->name('work');
     Route::get('/index',[IndexController::class,'index'])->name('index');
+    Route::get('/detail',[IndexController::class,'detail'])->name('detail');
 });
 
 
