@@ -9,6 +9,7 @@
     <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
     <link rel="stylesheet" href="{{ asset('/css/reset.css')  }}">
     <link rel="stylesheet" href="{{ asset('/css/common.css')  }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
     @yield('css')
 </head>

@@ -4,7 +4,6 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/worklog.css')  }}">
-{{-- <link rel="stylesheet" href="{{ asset('/css/common.css')  }}"> --}}
 @endsection
 
 <!-- 本体 -->
@@ -51,6 +50,8 @@
     </div>
 @endif
 </div>
+
+
 <script>
     // 現在時刻をページ読み込み時に設定
     let currentTimeElement = document.getElementById('current-time');

@@ -58,25 +58,13 @@ header{
 }
 
 .header__logout{
+  background-color: #000;
   color: #fff;
   font-size: 16px;
 }
 
 .header__logout:hover{
   font-weight: bold;
-}
-
-.header__btn{
-  background-color: #fff;
-  border-radius: 4px;
-  color: #000;
-  font-weight: bold;
-  padding: 10px 15px ;
-}
-
-.header__btn:hover{
-  opacity: 0.8;
-  transition: 0.3s;
 }
 
 .container{
@@ -91,14 +79,15 @@ header{
   color: #fff;
   font-weight: bold;
   justify-content: center;
-  width: 450px;
   height: 45px;
+  width: 100%;
+  margin: 40px 0;
 }
 
 .btn:hover{
   opacity: 0.8;
   transition: 0.2s;
-}
+} */
 
 .btn--big{
   width: 100%;
