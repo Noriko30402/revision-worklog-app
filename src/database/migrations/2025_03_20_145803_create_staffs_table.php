@@ -17,10 +17,7 @@ class CreateStaffsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            // $table->integer('status')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->time('total_rest_time')->nullable();
-            $table->time('total_work_time')->nullable();
             $table->rememberToken();
             $table->string('password');
             $table->timestamps();

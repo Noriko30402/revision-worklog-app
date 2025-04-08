@@ -76,7 +76,8 @@
             @endif
 
             @if ($workForThisDate)
-              <td><a  href={{ route('detail')}}>詳細</a></td>
+              <td><a href="{{ route('work.detail', ['work_id' => $workForThisDate->id]) }}">詳細</a></td>
+
             @else
               <td>-</td>
             @endif

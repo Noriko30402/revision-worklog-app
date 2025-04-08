@@ -28,7 +28,7 @@ class WorkController extends Controller
         if (!$confirm_date) {
             $status = 0;
         } else {
-            $status = Auth::guard('staff')->status;
+            $status = session('work_status', 0); // デフォルト0（未出勤）
         }
 
         return view('worklog',compact('formatted_date','now_time','status'));
@@ -89,6 +89,8 @@ class WorkController extends Controller
             $work->staff_id = $staff->id;
             $work->status = 1;
             $work->save();
+
+            session(['work_status' => 1]); // 出勤中ステータスを保存
             return 1;
         }else{
             return response()->view('worklog',compact('formatted_date','now_time'))
@@ -107,6 +109,7 @@ class WorkController extends Controller
             $lastWork->status = 3;
             $lastWork->total_work_time = $clock_out->diffInSeconds($clock_in);
             $lastWork->save();
+            session(['work_status' => 3]); // 出勤中ステータスを保存
             return 3;
     }
     return 0;
@@ -131,6 +134,7 @@ class WorkController extends Controller
      // 勤務ステータスを休憩中に変更
         $lastWork->status = 2;
         $lastWork->save();
+        session(['work_status' => 2]); // 出勤中ステータスを保存
 
          return 2;  // 休憩中ステータス
     }
@@ -158,7 +162,7 @@ class WorkController extends Controller
         $lastWork->status = 1;
         $lastWork->save();
     }
-
+    session(['work_status' => 1]); // 出勤中ステータスを保存
         return 1;
     }
 }

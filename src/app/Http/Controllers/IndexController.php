@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubmitWorkRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Work;
 use App\Models\Rest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Application;
 
 
 class IndexController extends Controller
@@ -35,8 +37,8 @@ class IndexController extends Controller
         }
 
         if ($request->has('nextMonth')) {
-            $startDate = Carbon::now()->addMonth()->startOfMonth(); // 次月の開始日
-            $endDate = Carbon::now()->addMonth()->endOfMonth(); // 次月の終了日
+            $startDate = Carbon::now()->addMonth()->startOfMonth();
+            $endDate = Carbon::now()->addMonth()->endOfMonth();
             $currentMonth = Carbon::now()->addMonth()->format('Y/m');
         }
 
@@ -68,9 +70,35 @@ class IndexController extends Controller
         return view('index', compact('restsByDate', 'worksByDate', 'works', 'currentMonth', 'rests', 'dates'));
     }
 
-    public function detail(){
+    public function detail(Request $request,$work_id){
 
-    return view('detail');
+        $staff = Auth::guard('staff')->user();
+        $work = Work::where('staff_id', $staff->id)
+        ->where('id', $work_id)
+        ->first();
+
+        $rest = Rest::whereIn('work_id', $work->pluck('id'))
+        ->first();
+
+
+        return view('detail',compact('work','staff','rest'));
     }
+
+    public function edit(SubmitWorkRequest $request,$work_id){
+
+        $staff = Auth::guard('staff')->user();
+
+        Application::create([
+        'work_id' => $work_id,
+        'staff_id' => Auth::guard('staff')->user(),
+        'clock_in' => $request ->clock_in,
+        'clock_out' => $request ->clock_out,
+        'rest_in' => $request ->rest_in,
+        'rest_out' => $request ->rest_out,
+        'date'=> $request -> date,
+        'comment' => $request ->comment,
+        ]);
+    }
+
 }
 
