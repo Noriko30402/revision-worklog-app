@@ -24,7 +24,6 @@
             <p class="status">退勤済</p>
         @endif
     </div>
-
         <div class="date">{{$formatted_date}}</div>
         <div class="time" > <span id="current-time">{{$now_time}}</span></div>
 
@@ -53,32 +52,27 @@
 
 
 <script>
-    // 現在時刻をページ読み込み時に設定
     let currentTimeElement = document.getElementById('current-time');
     let currentTime = currentTimeElement.innerText;
 
-    // 現在時刻を分割して、時間と分を取得
     let timeParts = currentTime.split(':');
     let hours = parseInt(timeParts[0], 10);
     let minutes = parseInt(timeParts[1], 10);
 
-    // 時間を1分ずつ進める関数
     function updateTime() {
         minutes++;
         if (minutes === 60) {
             minutes = 0;
             hours++;
             if (hours === 24) {
-                hours = 0; // 24時間制にリセット
+                hours = 0;
             }
         }
 
-        // 新しい時間を設定
         currentTime = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
         currentTimeElement.innerText = currentTime;
     }
 
-    // 1分ごとに時間を進める
     setInterval(updateTime, 60000);
 </script>
 @endsection

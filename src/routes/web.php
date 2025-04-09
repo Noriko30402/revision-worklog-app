@@ -54,6 +54,7 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
     Route::get('/detail',[IndexController::class,'detail'])->name('detail');
     Route::get('/detail/{work_id}', [IndexController::class, 'detail'])->name('work.detail');
     Route::post('/detail/{work_id}/edit',[IndexController::class,'edit'])->name('detail.edit');
+    Route::post('/detail/confirm',[IndexController::class,'confirm'])->name('detail.confirm');
 });
 
 

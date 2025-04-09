@@ -80,24 +80,27 @@ class IndexController extends Controller
         $rest = Rest::whereIn('work_id', $work->pluck('id'))
         ->first();
 
-
         return view('detail',compact('work','staff','rest'));
     }
 
-    public function edit(SubmitWorkRequest $request,$work_id){
-
+    public function edit(Request $request,$work_id){
         $staff = Auth::guard('staff')->user();
 
         Application::create([
         'work_id' => $work_id,
-        'staff_id' => Auth::guard('staff')->user(),
+        'staff_id' => $staff->id,
         'clock_in' => $request ->clock_in,
         'clock_out' => $request ->clock_out,
         'rest_in' => $request ->rest_in,
         'rest_out' => $request ->rest_out,
         'date'=> $request -> date,
-        'comment' => $request ->comment,
+        'comment' =>$request -> comment,
         ]);
+        return view('confirm');
+    }
+
+    public function confirm(){
+        view('confirm');
     }
 
 }

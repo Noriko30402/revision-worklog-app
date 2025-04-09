@@ -9,7 +9,9 @@ class Application extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['staff_id' ,' clock_in','clock_out','date','status'];
+    protected $fillable = [
+        'work_id', 'staff_id', 'clock_in', 'clock_out', 'rest_in', 'rest_out', 'date', 'comment'
+    ];
 
     public function staff()
     {

@@ -28,7 +28,7 @@ class WorkController extends Controller
         if (!$confirm_date) {
             $status = 0;
         } else {
-            $status = session('work_status', 0); // デフォルト0（未出勤）
+            $status = session('work_status', 0);
         }
 
         return view('worklog',compact('formatted_date','now_time','status'));
@@ -43,18 +43,12 @@ class WorkController extends Controller
 
         $lastWork = Work::where('staff_id', $staff->id)->latest()->first();
         $today = Carbon::today();
+        $status = (!$lastWork || !Carbon::parse($lastWork->date)->isSameDay($today))
+        ? 0 : $lastWork->status;
 
-        if (!$lastWork) {
-            $status = 0;
-        } else {
-            $status = $staff->status;
-        }
-
-        try {
-            DB::beginTransaction();
 
             if ($request->has('start_work')) {
-                $status = $this->startWork($lastWork, $staff, $now_time, $now_date);
+                $status = $this->startWork($lastWork, $staff, $now_time, $now_date,$formatted_date);
             }
 
             if ($request->has('end_work')) {
@@ -71,14 +65,10 @@ class WorkController extends Controller
             DB::commit();
 
             return view('worklog',compact('formatted_date', 'now_time', 'status'));
-        } catch (\Exception $e) {
-            DB::rollBack(); // 例外が発生した場合、ロールバック
-            return back()->with('error', 'すでに出勤打刻がされています。');
-        }
     }
 
     // 勤務開始処理
-    public function startWork($lastWork,$staff,$now_time,$now_date)
+    private function startWork($lastWork,$staff,$now_time,$now_date,$formatted_date)
     {
         $today = Carbon::today();
 
@@ -90,11 +80,12 @@ class WorkController extends Controller
             $work->status = 1;
             $work->save();
 
-            session(['work_status' => 1]); // 出勤中ステータスを保存
+            session(['work_status' => 1]);
             return 1;
         }else{
-            return response()->view('worklog',compact('formatted_date','now_time'))
-            ->with('error','すでに出勤打刻がされています。');
+            $status = 0;
+            session()->flash('error', 'すでに出勤打刻がされています。');
+            return view('worklog',compact('status','formatted_date','now_date','now_time'));
         }
     }
 
@@ -102,14 +93,16 @@ class WorkController extends Controller
     private function endWork($lastWork, $staff, $now_time, $now_date)
     {
         $clock_in = Carbon::parse($lastWork->clock_in);
-        $clock_out = Carbon::parse($lastWork->clock_out);
+        $clock_out = Carbon::parse( $now_time);
+        $total_work_time = $clock_out->diffInSeconds($clock_in);
+        $formattedWorkTime = gmdate("H:i:s", $total_work_time);
 
         if ($lastWork && $lastWork->date->isSameDay($now_date) && empty($lastWork->clock_out)) {
             $lastWork->clock_out = $now_time;
             $lastWork->status = 3;
-            $lastWork->total_work_time = $clock_out->diffInSeconds($clock_in);
+            $lastWork->total_work_time = $formattedWorkTime;
             $lastWork->save();
-            session(['work_status' => 3]); // 出勤中ステータスを保存
+            session(['work_status' => 3]);
             return 3;
     }
     return 0;
@@ -134,9 +127,9 @@ class WorkController extends Controller
      // 勤務ステータスを休憩中に変更
         $lastWork->status = 2;
         $lastWork->save();
-        session(['work_status' => 2]); // 出勤中ステータスを保存
+        session(['work_status' => 2]);
 
-         return 2;  // 休憩中ステータス
+        return 2;
     }
 
     // 休憩終了処理
@@ -150,11 +143,13 @@ class WorkController extends Controller
     $lastWork = Work::where('staff_id', $staff->id)->latest()->first();
 
     $rest_in = Carbon::parse($rest->rest_in);
-    $rest_out = Carbon::parse($rest->rest_out);
+    $rest_out = Carbon::parse($now_time);
+    $total_rest_time = $rest_out->diffInSeconds($rest_in);
+    $formattedRestTime = gmdate("H:i:s", $total_rest_time);
 
     if ($rest && $lastWork) {
         $rest->rest_out = $now_time;
-        $rest->total_rest_time = $rest_out->diffInSeconds($rest_in);
+        $rest->total_rest_time = $formattedRestTime; // 秒単位で保存
         $rest->save();
 
         // 勤務ステータスを勤務中に戻す
@@ -162,7 +157,7 @@ class WorkController extends Controller
         $lastWork->status = 1;
         $lastWork->save();
     }
-    session(['work_status' => 1]); // 出勤中ステータスを保存
+    session(['work_status' => 1]);
         return 1;
     }
 }
