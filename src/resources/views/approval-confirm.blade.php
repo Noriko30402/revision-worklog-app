@@ -17,21 +17,21 @@
   <table>
       <tr>
         <th>名前</th>
-        <td>{{$staff['name']}}</td>
+        <td>{{ $pendingApplication->staff->name }}</td>
       </tr>
 
       <tr>
         <th>日付</th>
-        <td> {{ \Carbon\Carbon::parse($application->date)->format('Y年n月j日') }}</td>
+        <td>{{ \Carbon\Carbon::parse($pendingApplication->date)->format('Y/n/j') }}</td>
       </tr>
       <tr>
         <th>出勤</th>
-        <td>{{ $application->clock_in }}</td>
+        <td>{{ $pendingApplication->clock_in }}</td>
         <td>~</td>
-        <td> {{ $application->clock_out }}</td>
+        <td> {{ $pendingApplication->clock_out }}</td>
       </tr>
 
-    @foreach ($restArray['rest_in'] as $i => $in)
+      @foreach ($restArray['rest_in'] as $i => $in)
       <tr>
         <th>休憩{{ $i + 1 }}</th>
         <td>{{ $in }}</td>
@@ -42,7 +42,7 @@
 
       <tr>
         <th>コメント</th>
-        <td>{{ $application->comment }}</td>
+        <td>{{ $pendingApplication->comment }}</td>
       </tr>
   </table>
   </div>

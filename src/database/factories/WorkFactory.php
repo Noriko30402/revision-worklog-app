@@ -36,6 +36,8 @@ class WorkFactory extends Factory
                         ->where('staff_id', 1)
                         ->first();
 
+        $totalWorkTime = gmdate('H:i:s', $clockOut->diffInSeconds($clockIn));
+
         // ランダムなスタッフIDを取得
         $randomStaff = Staff::inRandomOrder()->first();
         $staffId = $randomStaff ? $randomStaff->id : 1; // fallbackで1を入れておく
@@ -50,7 +52,7 @@ class WorkFactory extends Factory
             'date' => $randomDate->toDateString(),
             'clock_in' => $clockIn->toTimeString(),
             'clock_out' => $clockOut->toTimeString(),
-            'total_work_time' => '00:00:00',
+            'total_work_time' => $totalWorkTime,
         ];
     }
 }

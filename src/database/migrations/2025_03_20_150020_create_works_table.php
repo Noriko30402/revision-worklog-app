@@ -21,6 +21,7 @@ class CreateWorksTable extends Migration
             $table->time('clock_out')->nullable();
             $table->time('total_work_time')->nullable();
             $table->integer('status')->nullable();
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

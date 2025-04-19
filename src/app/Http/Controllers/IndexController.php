@@ -16,7 +16,6 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $currentMonth = Carbon::now()->format('Y/m');
-
         $startDate = Carbon::now()->startOfMonth();
         $endDate = Carbon::now()->endOfMonth();
 
@@ -77,31 +76,67 @@ class IndexController extends Controller
         ->where('id', $work_id)
         ->first();
 
-        $rest = Rest::whereIn('work_id', $work->pluck('id'))
-        ->first();
+        $rests = Rest::where('staff_id', $staff->id)
+        ->where('work_id', $work_id)
+        ->get();
 
-        return view('detail',compact('work','staff','rest'));
+        return view('detail',compact('work','staff','rests'));
     }
 
-    public function edit(Request $request,$work_id){
+    public function edit(SubmitWorkRequest $request,$work_id){
+        $staff = Auth::guard('staff')->user();
+        $restIns = $request->input('rest_in');
+        $restOuts = $request->input('rest_out');
+
+        $rests = [
+            'rest_in' => $request->input('rest_in') ?? [],
+            'rest_out' => $request->input('rest_out') ?? [],
+        ];
+                $application =  Application::create([
+                'staff_id' => $staff->id,
+                'work_id' => $work_id,
+                'clock_in' => $request->input('clock_in'),
+                'clock_out' => $request->input('clock_out'),
+                'rests' => json_encode($rests),
+                'date' => $request->input('date'),
+                'comment' => $request->input('comment'),
+            ]);
+        $restArray = json_decode($application->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
+
+        return view('confirm',compact('staff','application','restArray'));
+    }
+
+    public function approval(Request $request){
+
+        $tab = $request->input('tab', 'approval');
+
+        $approvedApplications  = Application::with('staff')
+                                ->where('approved', 1)
+                                ->get();
+
+        $pendingApplications = Application::with('staff')
+                                ->where('approved', 0)
+                                ->get();
+
+        return view('approval', compact('tab', 'approvedApplications','pendingApplications'));
+    }
+
+    public function approvalDetail($work_id){
+
         $staff = Auth::guard('staff')->user();
 
-        Application::create([
-        'work_id' => $work_id,
-        'staff_id' => $staff->id,
-        'clock_in' => $request ->clock_in,
-        'clock_out' => $request ->clock_out,
-        'rest_in' => $request ->rest_in,
-        'rest_out' => $request ->rest_out,
-        'date'=> $request -> date,
-        'comment' =>$request -> comment,
-        ]);
-        return view('confirm');
-    }
+        $approvedApplications  = Application::with('staff')
+                                ->where('work_id', $work_id)
+                                ->where('approved', 0)
+                                ->first();
+        $pendingApplication = Application::with('staff')
+                                ->where('work_id', $work_id)
+                                ->where('approved', 0)
+                                ->first();
+        $restArray = json_decode($pendingApplication->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
 
-    public function confirm(){
-        view('confirm');
+
+        return view('approval-confirm', compact('staff', 'approvedApplications','pendingApplication','restArray'));
     }
 
 }
-

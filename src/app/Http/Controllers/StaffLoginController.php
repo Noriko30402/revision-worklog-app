@@ -10,8 +10,6 @@ use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Auth\Events\Registered;
 
 
-
-
 class StaffLoginController extends Controller
 {
     public function showLoginForm()

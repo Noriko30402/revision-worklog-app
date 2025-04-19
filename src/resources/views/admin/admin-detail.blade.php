@@ -3,31 +3,33 @@
 @section('title','勤怠詳細')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('/css/detail.css')  }}">
+<link rel="stylesheet" href="{{ asset('/css/detail.css') }}">
 @endsection
 
-<!-- 本体 -->
 @section('content')
-
 @include('components.staff-header')
 
 <div class="container">
-<h1>勤怠詳細</h1>
+  <h1>勤怠詳細</h1>
 
-<form action="{{ route('detail.edit', ['work_id' => $work->id])}}" method="post">
-  @csrf
+  <form action="{{ route('admin.edit', ['work_id' => $work->id])}}" method="post">
+    @csrf
+    @method('PUT')
   <div class="table">
     <table>
       <tr>
         <th>名前</th>
-        <td>{{$staff['name']}}</td>
+        <td>{{ $work->staff->name }}</td>
       </tr>
+
       <input type="hidden" name="work_id" value="{{ $work->id }}">
       <input type="hidden" name="date" value="{{ $work->date }}">
+
       <tr>
         <th>日付</th>
-        <td>{{ \Carbon\Carbon::parse($work->date)->isoFormat('Y[年]') }}</td>
-        <td>{{ \Carbon\Carbon::parse($work->date)->isoFormat('M[月]D[日]') }}</td>
+        <td colspan="2">
+          {{ \Carbon\Carbon::parse($work->date)->isoFormat('Y年M月D日') }}
+        </td>
       </tr>
 
       <tr>
@@ -44,41 +46,38 @@
         <td>~</td>
         <td><input type="text" name="rest_out[]" value="{{ \Carbon\Carbon::parse($rest->rest_out)->format('H:i') }}"></td>
       </tr>
-      <div class="form__error">
-        @error('rest_in')
-          <span class="invalid-feedback" role="alert">
-              {{ $message }}
-          </span>
-        @enderror
-        @error('rest_out')
-        <span class="invalid-feedback" role="alert">
-            {{ $message }}
-        </span>
-      @enderror
-
-      </div>
-
       @endforeach
 
       <tr>
         <th>備考</th>
-        <td><input class="comment" type="text" name="comment" value="{{ $work->comment}}"></td>
+        <td colspan="3">
+          <input class="comment" type="text" name="comment" value="{{ $work->comment }}">
+        </td>
       </tr>
-      <div class="form__error">
-        @error('comment')
-          <span class="invalid-feedback" role="alert">
-              {{ $message }}
-          </span>
-        @enderror
-      </div>
-  
     </table>
   </div>
 
-  <div class="form__button">
-    <button type="submit" class="edit">修正</button>
-  </div>
+    <div class="form__error">
+      @error('clock_in')
+        <span class="invalid-feedback">{{ $message }}</span>
+      @enderror
+      @error('clock_out')
+        <span class="invalid-feedback">{{ $message }}</span>
+      @enderror
+      @error('rest_in')
+        <span class="invalid-feedback">{{ $message }}</span>
+      @enderror
+      @error('rest_out')
+        <span class="invalid-feedback">{{ $message }}</span>
+      @enderror
+      @error('comment')
+        <span class="invalid-feedback">{{ $message }}</span>
+      @enderror
+    </div>
 
-</form>
+    <div class="form__button">
+      <button type="submit" class="edit">修正</button>
+    </div>
+  </form>
 </div>
 @endsection

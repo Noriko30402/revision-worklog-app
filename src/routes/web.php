@@ -8,6 +8,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Requests\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\IndexController;
+use App\Models\Staff;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -30,8 +32,10 @@ Route::post('/login', [AdminLoginController::class, 'login']);
 Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 });
 
-Route::middleware(['auth:admin', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/detail/{work_id}',[AdminController::class,'detail'])->name('admin.detail');
+    Route::put('/edit/{work_id}',[AdminController::class,'edit'])->name('admin.edit');
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 });
 
@@ -54,7 +58,8 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
     Route::get('/detail',[IndexController::class,'detail'])->name('detail');
     Route::get('/detail/{work_id}', [IndexController::class, 'detail'])->name('work.detail');
     Route::post('/detail/{work_id}/edit',[IndexController::class,'edit'])->name('detail.edit');
-    Route::post('/detail/confirm',[IndexController::class,'confirm'])->name('detail.confirm');
+    Route::get('/detail/{work_id}/approval',[IndexController::class,'approvalDetail'])->name('approval.detail');
+    Route::get('/approval',[IndexController::class,'approval'])->name('approval');
 });
 
 
@@ -73,6 +78,8 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+    $user = Staff::findOrFail($request->route('id'));
+    Auth::guard('staff')->login($user);
     session()->forget('unauthenticated_user');
     return redirect('staff/attendance');
-})->middleware('auth:staff')->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify');

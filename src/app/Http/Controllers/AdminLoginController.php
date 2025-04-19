@@ -12,23 +12,21 @@ class AdminLoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('admin.admin-login'); // 管理者ログイン画面を表示
+        return view('admin.admin-login');
     }
 
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
-
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.index'); // 管理者ダッシュボードへ
+            return redirect()->route('admin.index');
         }
-
         return back()->withErrors(['email' => 'ログイン情報が登録されていません']);
     }
 
     public function logout()
     {
         Auth::guard('admin')->logout();
-        return redirect()->route('admin.login'); // ログアウト後にログイン画面へ
+        return redirect()->route('admin.login');
     }
 }

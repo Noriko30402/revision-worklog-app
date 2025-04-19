@@ -8,7 +8,7 @@
         @if(Auth::check())
           <li><a href="{{  route('staff.attendance')  }}">勤怠</a></li>
           <li><a href="{{ route('index') }}">勤怠一覧</a></li>
-          <li><a href="">申請</a></li>
+          <li><a href="{{ route('approval')}}">申請</a></li>
           <li>
             <form action="{{ route('staff.logout') }}" method="post">
               @csrf
