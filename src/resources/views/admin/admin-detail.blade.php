@@ -7,10 +7,15 @@
 @endsection
 
 @section('content')
-@include('components.staff-header')
+@include('components.admin-header')
 
 <div class="container">
   <h1>勤怠詳細</h1>
+  @if (session('success'))
+    <div class="alert-success">
+      {{ session('success') }}
+    </div>
+  @endif
 
   <form action="{{ route('admin.edit', ['work_id' => $work->id])}}" method="post">
     @csrf
@@ -23,8 +28,7 @@
       </tr>
 
       <input type="hidden" name="work_id" value="{{ $work->id }}">
-      <input type="hidden" name="date" value="{{ $work->date }}">
-
+      <input type="hidden" name="date" value="{{ \Carbon\Carbon::parse($work->date)->format('Y-m-d') }}">
       <tr>
         <th>日付</th>
         <td colspan="2">

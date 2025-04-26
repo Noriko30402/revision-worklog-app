@@ -9,7 +9,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.staff-header')
+@include('components.admin-header')
 <div class="container">
   <h1>{{$displayDate1  }}の勤怠</h1>
   <div class="month-form">

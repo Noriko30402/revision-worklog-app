@@ -36,7 +36,11 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/detail/{work_id}',[AdminController::class,'detail'])->name('admin.detail');
     Route::put('/edit/{work_id}',[AdminController::class,'edit'])->name('admin.edit');
+    Route::get('/edit/{work_id}',[AdminController::class,'edit'])->name('admin.edit');
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+    Route::get('/staff/index',[AdminController::class,'staffIndex'])->name('staff.index');
+    Route::get('/staff/worklog/{staff_id}',[AdminController::class,'staffWorklog'])->name('staff.worklog');
+    Route::get('/admin/approval',[AdminController::class,'approval'])->name('admin.approval');
 });
 
 

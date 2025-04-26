@@ -1,6 +1,7 @@
 <header class="header">
   <div class="header__logo">
       <a href="/staff/login"><img src="{{ asset('img/logo.png') }}" alt="ロゴ"></a>
+      <link rel="stylesheet" href="{{ asset('/css/header.css')  }}">
   </div>
   @if( !in_array(Route::currentRouteName(), ['register', 'staff/login']) )
   <nav class="header__nav">
