@@ -89,31 +89,31 @@ class AdminController extends Controller
 
     public function staffWorklog(Request $request , $staff_id)
     {
-        $currentMonth = Carbon::now()->format('Y/m');
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
 
-        $dates = [];
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            $dates[] = $currentDate->copy();
-            $currentDate->addDay();
-        }
+        $monthParam = $request -> query('month');
+        $currentMonth = $monthParam ? Carbon::createFromFormat('Y/m', $monthParam): Carbon::now();
+        $displayDate1 = $currentMonth->format('Y/m');
 
-         // 月が変更された場合、前月または次月のデータを取得
-        if ($request->has('previousMonth')) {
-            $startDate = Carbon::now()->subMonth()->startOfMonth();
-            $endDate = Carbon::now()->subMonth()->endOfMonth();
-            $currentMonth = Carbon::now()->subMonth()->format('Y/m');
-        }
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y/m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y/m');
 
-        if ($request->has('nextMonth')) {
-            $startDate = Carbon::now()->addMonth()->startOfMonth();
-            $endDate = Carbon::now()->addMonth()->endOfMonth();
-            $currentMonth = Carbon::now()->addMonth()->format('Y/m');
-        }
+        // その月のデータを取得
+        $works = Work::with('staff')
+                ->whereYear('date', $currentMonth->year)
+                ->whereMonth('date', $currentMonth->month)
+                ->where('staff_id', $staff_id)
+                ->get();
 
-        // 日付配列を作成
+        $rests = Rest::whereYear('date', $currentMonth->year)
+                ->whereMonth('date', $currentMonth->month)
+                ->where('staff_id', $staff_id)
+                ->get();
+
+
+            // 月の開始日と終了日
+        $startDate = $currentMonth->copy()->startOfMonth();
+        $endDate = $currentMonth->copy()->endOfMonth();
+
         $dates = [];
         $currentDate = $startDate->copy();
         while ($currentDate->lte($endDate)) {
@@ -123,25 +123,12 @@ class AdminController extends Controller
 
         $staff = Staff::findOrFail($staff_id);
 
-        // その月のデータを取得
-        $works = Work::with('staff')
-            ->whereYear('date', $startDate->year)
-            ->whereMonth('date', $startDate->month)
-            ->where('staff_id', $staff_id)
-            ->orderBy('date', 'asc')
-            ->get();
-
-        $rests = Rest::whereYear('date', $startDate->year)
-            ->whereMonth('date', $startDate->month)
-            ->where('staff_id', $staff_id)
-            ->orderBy('date', 'asc')
-            ->get();
-
         // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
         $restsByDate = $rests->keyBy(fn($rest) => Carbon::parse($rest->date)->toDateString());
 
-        return view('admin.staff-worklog', compact('restsByDate', 'worksByDate', 'works', 'currentMonth', 'rests', 'dates','staff'));
+        return view('index', compact('restsByDate', 'worksByDate', 'works',
+                    'displayDate1', 'rests', 'dates','prevMonth','nextMonth','staff'));
     }
 
 

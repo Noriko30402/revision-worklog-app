@@ -15,58 +15,44 @@ class IndexController extends Controller
 {
     public function index(Request $request)
     {
-        $currentMonth = Carbon::now()->format('Y/m');
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
+        $monthParam = $request->query('month');
+        $currentMonth = $monthParam ? Carbon::createFromFormat('Y/m', $monthParam): Carbon::now();
+        $displayDate1 = $currentMonth->format('Y/m');
+
+        $prevMonth = $currentMonth->copy()->subMonth()->format('Y/m');
+        $nextMonth = $currentMonth->copy()->addMonth()->format('Y/m');
 
         $staff = Auth::guard('staff')->user();
 
-        $dates = [];
-        $currentDate = $startDate->copy();
+            // その月のデータを取得
+        $works = Work::whereYear('date', $currentMonth->year)
+                ->whereMonth('date', $currentMonth->month)
+                ->where('staff_id', $staff->id)
+                ->get();
+
+        $rests = Rest::whereYear('date', $currentMonth->year)
+                        ->whereMonth('date', $currentMonth->month)
+                        ->where('staff_id', $staff->id)
+                        ->get();
+
+
+    // 月の開始日と終了日
+    $startDate = $currentMonth->copy()->startOfMonth();
+    $endDate = $currentMonth->copy()->endOfMonth();
+
+    $dates = [];
+    $currentDate = $startDate->copy();
         while ($currentDate->lte($endDate)) {
             $dates[] = $currentDate->copy();
             $currentDate->addDay();
         }
-
-         // 月が変更された場合、前月または次月のデータを取得
-        if ($request->has('previousMonth')) {
-            $startDate = Carbon::now()->subMonth()->startOfMonth();
-            $endDate = Carbon::now()->subMonth()->endOfMonth();
-            $currentMonth = Carbon::now()->subMonth()->format('Y/m');
-        }
-
-        if ($request->has('nextMonth')) {
-            $startDate = Carbon::now()->addMonth()->startOfMonth();
-            $endDate = Carbon::now()->addMonth()->endOfMonth();
-            $currentMonth = Carbon::now()->addMonth()->format('Y/m');
-        }
-
-        // 日付配列を作成
-        $dates = [];
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            $dates[] = $currentDate->copy();
-            $currentDate->addDay();
-        }
-
-        // その月のデータを取得
-        $works = Work::whereYear('date', $startDate->year)
-            ->whereMonth('date', $startDate->month)
-            ->where('staff_id', $staff->id)
-            ->orderBy('date', 'asc')
-            ->get();
-
-        $rests = Rest::whereYear('date', $startDate->year)
-            ->whereMonth('date', $startDate->month)
-            ->where('staff_id', $staff->id)
-            ->orderBy('date', 'asc')
-            ->get();
 
         // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
         $restsByDate = $rests->keyBy(fn($rest) => Carbon::parse($rest->date)->toDateString());
 
-        return view('index', compact('restsByDate', 'worksByDate', 'works', 'currentMonth', 'rests', 'dates'));
+        return view('index', compact('restsByDate', 'worksByDate', 'works',
+                    'displayDate1', 'rests', 'dates','prevMonth','nextMonth'));
     }
 
     public function detail(Request $request,$work_id){

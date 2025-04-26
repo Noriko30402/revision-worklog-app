@@ -13,20 +13,12 @@
 <div class="container">
   <h1>勤怠一覧</h1>
 
-      <form class="month-form" action="{{ route('index') }}" method="post">
-      @csrf
-        <button class="btn-month" type="submit" name="previousMonth" class="btn btn-danger custom-button">
-          <i class="bi bi-arrow-left">前月</i>
-        </button>
-
-        <h2>{{ $currentMonth }}</h2>
-
-        <button class="btn-month" type="submit" name="nextMonth" class="btn btn-danger custom-button">
-          <i class="bi bi-arrow-right">次月</i>
-        </button>
-      </form>
-
-  <div class="table">
+  <div class="month-form">
+    <a href="{{ route('index', ['month' => $prevMonth]) }}" class="btn-date">← 前月</a>
+      <h2>{{ $displayDate1 }}</h2>
+    <a href="{{ route('index', ['month' => $nextMonth]) }}" class="btn-date">次月 →</a>
+  </div>
+<div class="table">
     <table>
       <thead class="table__header">
         <tr>
@@ -44,7 +36,6 @@
           <tr>
             <td>{{ $date->isoFormat('M/D（ddd）') }}</td>
 
-        <!-- 出勤時間と退勤時間 -->
             @php
               $workForThisDate = $worksByDate[$date->toDateString()] ?? null;
             @endphp
@@ -57,7 +48,6 @@
               <td>-</td>
             @endif
 
-        <!-- 休憩時間 -->
             @php
               $restForThisDate = $restsByDate[$date->toDateString()] ?? null;
             @endphp
@@ -68,7 +58,6 @@
               <td>-</td>
             @endif
 
-        <!-- 勤務時間 -->
             @if ($workForThisDate)
               <td>{{ \Carbon\Carbon::parse($workForThisDate->total_work_time)->format('H:i') }}</td>
             @else
