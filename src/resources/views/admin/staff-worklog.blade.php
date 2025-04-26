@@ -11,12 +11,13 @@
 
 @include('components.admin-header')
 <div class="container">
-  <h1>{{ $staff->name }}</h1>
+  <h1>{{ $staff->name }}さんの勤怠</h1>
 
   <div class="month-form">
-    <a href="{{ route('index', ['month' => $prevMonth]) }}" class="btn-date">← 前月</a>
-      <h2>{{ $displayDate1 }}</h2>
-    <a href="{{ route('index', ['month' => $nextMonth]) }}" class="btn-date">次月 →</a>
+    <a href="{{ route('staff.worklog', ['staff_id' => $staff_id, 'month' => $prevMonth]) }}" class="btn-date">← 前月</a>
+    <h2>{{ $displayDate1 }}</h2>
+    <a href="{{ route('staff.worklog', ['staff_id' => $staff_id, 'month' => $nextMonth]) }}" class="btn-date">次月 →</a>
+
   </div>
 
   <div class="table">
@@ -51,12 +52,8 @@
             @endif
 
         <!-- 休憩時間 -->
-            @php
-              $restForThisDate = $restsByDate[$date->toDateString()] ?? null;
-            @endphp
-
-            @if ($restForThisDate)
-              <td>{{ \Carbon\Carbon::parse($restForThisDate->total_rest_time)->format('H:i') }}</td>
+            @if ($workForThisDate)
+              <td>{{ \Carbon\Carbon::parse($workForThisDate->total_rest_time)->format('H:i') }}</td>
             @else
               <td>-</td>
             @endif
@@ -69,8 +66,7 @@
             @endif
 
             @if ($workForThisDate)
-              <td><a href="">詳細</a></td>
-
+            <td><a href="{{  route('admin.detail', ['work_id' => $workForThisDate])  }}">詳細</a></td>
             @else
               <td>-</td>
             @endif

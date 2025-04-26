@@ -39,8 +39,6 @@ class AdminController extends Controller
                                             'rest','prevDate','nextDate'));
 }
 
-
-
     public function detail($work_id){
 
         $work = Work::with('staff')
@@ -54,31 +52,61 @@ class AdminController extends Controller
         return view('admin.admin-detail',compact('work','rests'));
     }
 
-
-
-    public function edit(Request $request,$work_id){
-
-        $work = Work::findOrFail($work_id);
-        $work->update([
-            'clock_in' => $request->input('clock_in'),
-            'clock_out' => $request->input('clock_out'),
-            // 'date' => $request->input('date'),
-            'comment' => $request->input('comment'),
-        ]);
-
+    public function edit(Request $request, $work_id)
+    {
         $restIns = $request->input('rest_in');
         $restOuts = $request->input('rest_out');
 
         $rests = Rest::where('work_id', $work_id)->get();
 
         foreach ($rests as $index => $rest) {
-            $rest->update([
-                'rest_in' => $restIns[$index] ?? null,
-                'rest_out' => $restOuts[$index] ?? null,
-            ]);
-            session()->flash('success', '勤怠情報を更新しました。');
+            $rest_in = $restIns[$index] ?? null;
+            $rest_out = $restOuts[$index] ?? null;
+
+            $rest->rest_in = $rest_in;
+            $rest->rest_out = $rest_out;
+
+            if ($rest_in && $rest_out) {
+                $restInCarbon = Carbon::parse($rest_in);
+                $restOutCarbon = Carbon::parse($rest_out);
+                $total_rest_seconds = $restOutCarbon->diffInSeconds($restInCarbon);
+
+                $rest->total_rest_time = gmdate('H:i:s', $total_rest_seconds);
+            } else {
+                $rest->total_rest_time = null;
+            }
+            $rest->save();
         }
-        return view('admin.admin-detail', compact('work','rests'));
+
+        $totalRestSeconds = Rest::where('work_id', $work_id)
+                                ->whereNotNull('rest_in')
+                                ->whereNotNull('rest_out')
+                                ->get()
+                                ->sum(function ($rest) {
+                                    [$h, $m, $s] = explode(':', $rest->total_rest_time);
+                                    return ($h * 3600) + ($m * 60) + $s;
+                                });
+        // 出勤・退勤時刻
+        $clock_in = Carbon::parse($request->input('clock_in'));
+        $clock_out = Carbon::parse($request->input('clock_out'));
+        $workSeconds = $clock_out->diffInSeconds($clock_in);
+        $totalWorkSeconds = $workSeconds - $totalRestSeconds;
+
+        $formattedTotalWorkTime = gmdate('H:i:s', $totalWorkSeconds);
+        $formattedTotalRestTime = gmdate('H:i:s', $totalRestSeconds);
+
+        $work = Work::findOrFail($work_id);
+        $work->update([
+            'clock_in' => $request->input('clock_in'),
+            'clock_out' => $request->input('clock_out'),
+            'comment' => $request->input('comment'),
+            'total_work_time' => $formattedTotalWorkTime,
+            'total_rest_time' => $formattedTotalRestTime,
+        ]);
+
+        session()->flash('success', '勤怠情報を更新しました。');
+
+        return view('admin.admin-detail', compact('work', 'rests'));
     }
 
     public function staffIndex(){
@@ -125,26 +153,8 @@ class AdminController extends Controller
 
         // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
-        $restsByDate = $rests->keyBy(fn($rest) => Carbon::parse($rest->date)->toDateString());
 
-        return view('index', compact('restsByDate', 'worksByDate', 'works',
-                    'displayDate1', 'rests', 'dates','prevMonth','nextMonth','staff'));
+        return view('admin.staff-worklog', compact('worksByDate', 'works',
+                    'displayDate1', 'rests', 'dates','prevMonth','nextMonth','staff','staff_id'));
     }
-
-
-    public function approval(Request $request){
-
-        $tab = $request->input('tab', 'approval');
-
-        $approvedApplications  = Application::with('staff')
-                                ->where('approved', 1)
-                                ->get();
-
-        $pendingApplications = Application::with('staff')
-                                ->where('approved', 0)
-                                ->get();
-
-        return view('admin.approval', compact('tab', 'approvedApplications','pendingApplications'));
-    }
-
 }

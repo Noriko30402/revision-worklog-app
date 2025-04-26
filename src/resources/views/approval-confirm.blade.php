@@ -12,7 +12,7 @@
 @include('components.staff-header')
 
 <div class="container">
-  <h1>確認</h1>
+  <h1>勤怠詳細</h1>
   <div class="table">
   <table>
       <tr>
@@ -26,9 +26,9 @@
       </tr>
       <tr>
         <th>出勤</th>
-        <td>{{ $pendingApplication->clock_in }}</td>
+        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_in )->format('H:i') }}</td>
         <td>~</td>
-        <td> {{ $pendingApplication->clock_out }}</td>
+        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_out )->format('H:i') }}</td>
       </tr>
 
       @foreach ($restArray['rest_in'] as $i => $in)

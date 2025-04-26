@@ -9,15 +9,14 @@ class Work extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['staff_id' ,' clock_in','clock_out','date','status','comment'];
+    protected $fillable = ['staff_id' ,'clock_in','clock_out','date','status',
+                            'comment','total_rest_time','total_work_time'];
     protected $dates = ['date'];
 
     public function staff()
     {
         return $this ->belongsTo(Staff::class);
     }
-
-    // app/Models/Work.php
 
     public function rests()
     {

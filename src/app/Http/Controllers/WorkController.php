@@ -89,28 +89,9 @@ class WorkController extends Controller
         }
     }
 
-     // 勤務終了処理
-    private function endWork($lastWork, $staff, $now_time, $now_date)
-    {
-        $clock_in = Carbon::parse($lastWork->clock_in);
-        $clock_out = Carbon::parse( $now_time);
-        $total_work_time = $clock_out->diffInSeconds($clock_in);
-        $formattedWorkTime = gmdate("H:i:s", $total_work_time);
+         // 休憩開始処理
+    private function startRest($lastWork, $staff, $now_time, $now_date){
 
-        if ($lastWork && $lastWork->date->isSameDay($now_date) && empty($lastWork->clock_out)) {
-            $lastWork->clock_out = $now_time;
-            $lastWork->status = 3;
-            $lastWork->total_work_time = $formattedWorkTime;
-            $lastWork->save();
-            session(['work_status' => 3]);
-            return 3;
-    }
-    return 0;
-    }
-
-     // 休憩開始処理
-    private function startRest($lastWork, $staff, $now_time, $now_date)
-    {
         if (!$lastWork) {
             return response()->view('worklog', compact('formatted_date', 'now_time'))->with('error', '勤務記録がありません');
         }
@@ -124,41 +105,76 @@ class WorkController extends Controller
         $rest->work_id = $work_id;
         $rest->save();
 
-     // 勤務ステータスを休憩中に変更
+         // 勤務ステータスを休憩中に変更
         $lastWork->status = 2;
         $lastWork->save();
         session(['work_status' => 2]);
-
         return 2;
     }
 
     // 休憩終了処理
     private function endRest($lastWork, $staff, $now_time)
     {
-    $rest = Rest::where('work_id', $lastWork ? $lastWork->id : null)
-                ->whereNull('rest_out')
-                ->where('staff_id', $staff->id)
-                ->first();
 
-    $lastWork = Work::where('staff_id', $staff->id)->latest()->first();
+        $rest = Rest::where('work_id', $lastWork ? $lastWork->id : null)
+                    ->whereNull('rest_out')
+                    ->where('staff_id', $staff->id)
+                    ->first();
 
-    $rest_in = Carbon::parse($rest->rest_in);
-    $rest_out = Carbon::parse($now_time);
-    $total_rest_time = $rest_out->diffInSeconds($rest_in);
-    $formattedRestTime = gmdate("H:i:s", $total_rest_time);
+        $lastWork = Work::where('staff_id', $staff->id)->latest()->first();
 
-    if ($rest && $lastWork) {
-        $rest->rest_out = $now_time;
-        $rest->total_rest_time = $formattedRestTime; // 秒単位で保存
-        $rest->save();
+        $rest_in = Carbon::parse($rest->rest_in);
+        $rest_out = Carbon::parse($now_time);
+        $total_rest_time = $rest_out->diffInSeconds($rest_in);
+        $formattedRestTime = gmdate("H:i:s", $total_rest_time);
+
+        if ($rest && $lastWork) {
+            $rest->rest_out = $now_time;
+            $rest->total_rest_time = $formattedRestTime;
+            $rest->save();
 
         // 勤務ステータスを勤務中に戻す
-    if ($lastWork) {
-        $lastWork->status = 1;
-        $lastWork->save();
+        if ($lastWork) {
+            $lastWork->status = 1;
+            $lastWork->save();
+        }
+        session(['work_status' => 1]);
+            return 1;
+        }
     }
-    session(['work_status' => 1]);
-        return 1;
+
+     // 勤務終了処理
+    private function endWork($lastWork, $staff, $now_time, $now_date)
+    {
+        $clock_in = Carbon::parse($lastWork->clock_in);
+        $clock_out = Carbon::parse($now_time);
+        $work_time = $clock_out->diffInSeconds($clock_in);
+
+        // 休憩時間を取得
+        $total_rest_time = Rest::where('work_id', $lastWork->id)
+                        ->whereNotNull('rest_out')
+                        ->get()
+                        ->sum(function ($rest) {
+                            list($h, $m, $s) = explode(':', $rest->total_rest_time);
+                            return ($h * 3600) + ($m * 60) + $s;
+                        });
+
+        // 休憩時間を引いた最終労働時間
+        $total_work_time = $work_time - $total_rest_time;
+        $formattedWorkTime = gmdate("H:i:s", $total_work_time);
+        $formattedRestTime = gmdate("H:i:s", $total_rest_time);
+
+
+        if ($lastWork && $lastWork->date->isSameDay($now_date) && empty($lastWork->clock_out)) {
+            $lastWork->clock_out = $now_time;
+            $lastWork->status = 3;
+            $lastWork->total_work_time = $formattedWorkTime;
+            $lastWork->total_rest_time = $formattedRestTime;
+            $lastWork->save();
+            session(['work_status' => 3]);
+            return 3;
     }
-}
+    return 0;
+    }
+
 }

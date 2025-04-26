@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\IndexController;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ApprovalController;
 
 
 
@@ -40,10 +41,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     Route::get('/staff/index',[AdminController::class,'staffIndex'])->name('staff.index');
     Route::get('/staff/worklog/{staff_id}',[AdminController::class,'staffWorklog'])->name('staff.worklog');
-    Route::get('/admin/approval',[AdminController::class,'approval'])->name('admin.approval');
+    Route::get('/approval',[ApprovalController::class,'approval'])->name('admin.approval');
+    Route::get('/approval/detail/{work_id}',[ApprovalController::class,'approvalDetail'])->name('approval.detail');
+    Route::post('/approval/detail/{work_id}', [ApprovalController::class, 'update'])->name('approval.update');
 });
-
-
 
 
 // スタッフ

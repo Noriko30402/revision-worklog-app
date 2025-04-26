@@ -9,7 +9,7 @@ class Rest extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['staff_id' ,' rest_in','rest_out','date','work_id','total_rest_time'];
+    protected $fillable = ['staff_id' ,'rest_in','rest_out','date','work_id','total_rest_time'];
 
     public function staff()
     {

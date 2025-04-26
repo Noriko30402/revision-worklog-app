@@ -49,9 +49,8 @@ class IndexController extends Controller
 
         // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
-        $restsByDate = $rests->keyBy(fn($rest) => Carbon::parse($rest->date)->toDateString());
 
-        return view('index', compact('restsByDate', 'worksByDate', 'works',
+        return view('index', compact( 'worksByDate', 'works',
                     'displayDate1', 'rests', 'dates','prevMonth','nextMonth'));
     }
 
@@ -111,10 +110,6 @@ class IndexController extends Controller
 
         $staff = Auth::guard('staff')->user();
 
-        $approvedApplications  = Application::with('staff')
-                                ->where('work_id', $work_id)
-                                ->where('approved', 0)
-                                ->first();
         $pendingApplication = Application::with('staff')
                                 ->where('work_id', $work_id)
                                 ->where('approved', 0)
@@ -122,7 +117,7 @@ class IndexController extends Controller
         $restArray = json_decode($pendingApplication->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
 
 
-        return view('approval-confirm', compact('staff', 'approvedApplications','pendingApplication','restArray'));
+        return view('approval-confirm', compact('staff','pendingApplication','restArray'));
     }
 
 }

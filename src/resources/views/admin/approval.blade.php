@@ -14,8 +14,8 @@
 <div class="container">
   <h1>申請一覧</h1>
   <ul class="tabs">
-    <li><a href="{{ route('approval', ['tab' => 'approval']) }}"class="{{ request('tab', 'approval') == 'approval' ? 'active' : '' }}">承認待ち</a></li>
-    <li><a href="{{ route('approval', ['tab' => 'approved']) }}" class="{{ request('tab') == 'approved' ? 'active' : '' }}">承認済み</a></li>
+    <li><a href="{{ route('admin.approval', ['tab' => 'approval']) }}"class="{{ request('tab', 'approval') == 'approval' ? 'active' : '' }}">承認待ち</a></li>
+    <li><a href="{{ route('admin.approval', ['tab' => 'approved']) }}" class="{{ request('tab') == 'approved' ? 'active' : '' }}">承認済み</a></li>
   </ul>
 
   <div class="table">
@@ -57,7 +57,7 @@
           <td>{{ \Carbon\Carbon::parse($approvedApplication->date)->format('Y/n/j') }}</td>
           <td>{{ $approvedApplication->comment }}</td>
           <td>{{ \Carbon\Carbon::parse($approvedApplication->created_at)->format('Y/n/j') }}</td>
-          <td><a href="{{route('approval.detail')}}">詳細</a></td>
+          <td><a href="{{ route('approval.detail', ['work_id' => $pendingApplication->work_id]) }}">詳細</a></td>
         </tr>
       @endforeach
     @endif

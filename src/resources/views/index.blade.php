@@ -48,12 +48,8 @@
               <td>-</td>
             @endif
 
-            @php
-              $restForThisDate = $restsByDate[$date->toDateString()] ?? null;
-            @endphp
-
-            @if ($restForThisDate)
-              <td>{{ \Carbon\Carbon::parse($restForThisDate->total_rest_time)->format('H:i') }}</td>
+            @if ($workForThisDate)
+              <td>{{ \Carbon\Carbon::parse($workForThisDate->total_rest_time)->format('H:i') }}</td>
             @else
               <td>-</td>
             @endif

@@ -49,13 +49,23 @@ header{
   align-items: center;
 }
 
-.header__nav li{
-  margin-right: 30px;
-}
 
 .header__nav li:hover{
   font-weight: bold;
 }
+ul.tabs a.active{
+  transition: color 1s ease;
+}
+
+ul.tabs a:not(.active) {
+  color: #c0c0c0;
+}
+
+li {
+  list-style-type: none;
+  margin: 10px 30px;
+}
+
 
 .header__logout{
   background-color: #000;
@@ -63,9 +73,6 @@ header{
   font-size: 16px;
 }
 
-.header__logout:hover{
-  font-weight: bold;
-}
 
 .container{
   padding: 5%;
@@ -87,7 +94,7 @@ header{
 .btn:hover{
   opacity: 0.8;
   transition: 0.2s;
-} */
+}
 
 .btn--big{
   width: 100%;
