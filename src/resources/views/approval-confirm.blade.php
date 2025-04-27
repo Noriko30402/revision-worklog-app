@@ -26,9 +26,9 @@
       </tr>
       <tr>
         <th>出勤</th>
-        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_in )->format('H:i') }}</td>
+        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_in)->format('H:i') }}</td>
         <td>~</td>
-        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_out )->format('H:i') }}</td>
+        <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_out)->format('H:i') }}</td>
       </tr>
 
       @foreach ($restArray['rest_in'] as $i => $in)
@@ -38,7 +38,7 @@
         <td>~</td>
         <td>{{ $restArray['rest_out'][$i] ?? '' }}</td>
       </tr>
-    @endforeach
+      @endforeach
 
       <tr>
         <th>コメント</th>

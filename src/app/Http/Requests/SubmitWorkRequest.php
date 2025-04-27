@@ -38,14 +38,14 @@ class SubmitWorkRequest extends FormRequest
 
         ];
     }
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if ($this->clock_in >= $this->clock_out) {
-                $validator->errors()->add('clock_in', '出勤時間は退勤時間より前でなければなりません。');
-            }
-        });
-    }
+    // public function withValidator($validator)
+    // {
+    //     $validator->after(function ($validator) {
+    //         if ($this->clock_in >= $this->clock_out) {
+    //             $validator->errors()->add('clock_in', '出勤時間は退勤時間より前でなければなりません。');
+    //         }
+    //     });
+    // }
 
     // public function withValidator($validator)
     // {
@@ -72,7 +72,7 @@ class SubmitWorkRequest extends FormRequest
     //         if ($restEnd && ($restEnd->lt($clockIn) || $restEnd->gt($clockOut))) {
     //             $validator->errors()->add('rest_out', '休憩時間が勤務時間外です。');
     //         }
-    //         dd($this->all());
+
     //     });
     // }
 }

@@ -42,7 +42,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/staff/index',[AdminController::class,'staffIndex'])->name('staff.index');
     Route::get('/staff/worklog/{staff_id}',[AdminController::class,'staffWorklog'])->name('staff.worklog');
     Route::get('/approval',[ApprovalController::class,'approval'])->name('admin.approval');
-    Route::get('/approval/detail/{work_id}',[ApprovalController::class,'approvalDetail'])->name('approval.detail');
+    Route::get('/approval/detail/{work_id}',[ApprovalController::class,'approvalDetail'])->name('admin.approval.detail');
     Route::post('/approval/detail/{work_id}', [ApprovalController::class, 'update'])->name('approval.update');
 });
 

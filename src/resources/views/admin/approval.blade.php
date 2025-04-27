@@ -45,8 +45,10 @@
           <td>{{ \Carbon\Carbon::parse($pendingApplication->date)->format('Y/n/j') }}</td>
           <td>{{ $pendingApplication->comment }}</td>
           <td>{{ \Carbon\Carbon::parse($pendingApplication->created_at)->format('Y/n/j') }}</td>
-          <td><a href="{{ route('approval.detail', ['work_id' => $pendingApplication->work_id]) }}">詳細</a></td>
+          <td><a href="{{ route('admin.approval.detail', ['work_id' => $pendingApplication->work_id]) }}">詳細</a></td>
         </tr>
+
+
       @endforeach
 
     @elseif($tab == 'approved')
