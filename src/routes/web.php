@@ -11,9 +11,7 @@ use App\Http\Controllers\IndexController;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ApprovalController;
-
-
-
+use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +41,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/staff/worklog/{staff_id}',[AdminController::class,'staffWorklog'])->name('staff.worklog');
     Route::get('/approval',[ApprovalController::class,'approval'])->name('admin.approval');
     Route::get('/approval/detail/{work_id}',[ApprovalController::class,'approvalDetail'])->name('admin.approval.detail');
+    Route::get('/detail/{work_id}/complete',[ApprovalController::class,'approvalComplete'])->name('admin.approval.complete');
     Route::post('/approval/detail/{work_id}', [ApprovalController::class, 'update'])->name('approval.update');
 });
 
@@ -64,6 +63,7 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
     Route::get('/detail/{work_id}', [IndexController::class, 'detail'])->name('work.detail');
     Route::post('/detail/{work_id}/edit',[IndexController::class,'edit'])->name('detail.edit');
     Route::get('/detail/{work_id}/approval',[IndexController::class,'approvalDetail'])->name('approval.detail');
+    Route::get('/detail/{work_id}/complete',[IndexController::class,'approvalComplete'])->name('approval.complete');
     Route::get('/approval',[IndexController::class,'approval'])->name('approval');
 });
 

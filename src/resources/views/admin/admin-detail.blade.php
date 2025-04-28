@@ -17,7 +17,7 @@
     </div>
   @endif
 
-  <form action="{{ route('admin.edit', ['work_id' => $work->id])}}" method="post">
+  <form action="{{ route('admin.approval.detail', ['work_id' => $work->id])}}" method="post">
     @csrf
     @method('PUT')
   <div class="table">

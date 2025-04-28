@@ -34,35 +34,35 @@
   <tbody class="table__main">
   <div class="tab-content">
     @if($tab == 'approval')
-      @foreach ($pendingApplications as $pendingApplication)
-        <tr>
-          <td>
-            @if ( $pendingApplication->approved  == 0)
-              承認待ち
-            @endif
-          </td>
-          <td>{{ $pendingApplication->staff->name }}</td>
-          <td>{{ \Carbon\Carbon::parse($pendingApplication->date)->format('Y/n/j') }}</td>
-          <td>{{ $pendingApplication->comment }}</td>
-          <td>{{ \Carbon\Carbon::parse($pendingApplication->created_at)->format('Y/n/j') }}</td>
-          <td><a href="{{ route('approval.detail', ['work_id' => $pendingApplication->work_id]) }}">詳細</a></td>
-        </tr>
-      @endforeach
+      @if(isset($pendingApplicationsGrouped ))
+        @foreach ($pendingApplicationsGrouped as $workId => $pendingApplication)
+          <tr>
+            <td>承認待ち</td>
+            <td>{{ $pendingApplication->first()->staff->name }}</td>
+            <td>{{ \Carbon\Carbon::parse($pendingApplication->first()->date)->format('Y/n/j') }}</td>
+            <td>{{ $pendingApplication->first()->comment }}</td>
+            <td>{{ \Carbon\Carbon::parse($pendingApplication->first()->created_at)->format('Y/n/j') }}</td>
+            <td><a href="{{ route('approval.detail', ['work_id' => $pendingApplication->first()->work_id]) }}">詳細</a></td>
+          </tr>
+        @endforeach
+      @endif
 
     @elseif($tab == 'approved')
-      @foreach ($approvedApplications as $approvedApplication)
-        <tr>
-          <td>承認済み</td>
-          <td>{{ $approvedApplication->staff->name }}</td>
-          <td>{{ \Carbon\Carbon::parse($approvedApplication->date)->format('Y/n/j') }}</td>
-          <td>{{ $approvedApplication->comment }}</td>
-          <td>{{ \Carbon\Carbon::parse($approvedApplication->created_at)->format('Y/n/j') }}</td>
-          <td><a href="{{route('approval.detail')}}">詳細</a></td>
-        </tr>
-      @endforeach
+      @if(isset($approvedApplicationsGrouped))
+        @foreach ($approvedApplicationsGrouped as $workId => $approvedApplication)
+          <tr>
+            <td>承認済み</td>
+            <td>{{ $approvedApplication->first()->staff->name }}</td>
+            <td>{{ \Carbon\Carbon::parse($approvedApplication->first()->date)->format('Y/n/j') }}</td>
+            <td>{{ $approvedApplication->first()->comment }}</td>
+            <td>{{ \Carbon\Carbon::parse($approvedApplication->first()->created_at)->format('Y/n/j') }}</td>
+            <td><a href="{{route('approval.complete', ['work_id' => $approvedApplication->first()->work_id]) }}">詳細</a></td>
+          </tr>
+        @endforeach
+      @endif
     @endif
   </div>
-    </table>
+  </table>
   </div>
 </div>
 @endsection

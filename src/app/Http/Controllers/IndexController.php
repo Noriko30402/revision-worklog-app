@@ -68,27 +68,29 @@ class IndexController extends Controller
         return view('detail',compact('work','staff','rests'));
     }
 
-    public function edit(SubmitWorkRequest $request,$work_id){
-        $staff = Auth::guard('staff')->user();
-        $restIns = $request->input('rest_in');
-        $restOuts = $request->input('rest_out');
+    public function edit(Request $request,$work_id){
 
-        $rests = [
-            'rest_in' => $request->input('rest_in') ?? [],
-            'rest_out' => $request->input('rest_out') ?? [],
-        ];
-                $application =  Application::create([
+        $staff = Auth::guard('staff')->user();
+        $rest_ins = $request->input('rest_in');
+        $rest_outs = $request->input('rest_out');
+
+    // 休憩ごとに1行ずつ保存する
+        foreach ($rest_ins as $index => $rest_in) {
+            $application =  Application::create([
                 'staff_id' => $staff->id,
                 'work_id' => $work_id,
                 'clock_in' => $request->input('clock_in'),
                 'clock_out' => $request->input('clock_out'),
-                'rests' => json_encode($rests),
+                'rest_in' => $rest_in,
+                'rest_out' => $rest_outs[$index] ?? null,
                 'date' => $request->input('date'),
                 'comment' => $request->input('comment'),
-            ]);
-        $restArray = json_decode($application->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
+        ]);
+    }
+        $rests = Application::where('work_id', $work_id)
+                ->get();
 
-        return view('confirm',compact('staff','application','restArray'));
+        return view('confirm',compact('staff','application','rests'));
     }
 
     public function approval(Request $request){
@@ -103,7 +105,10 @@ class IndexController extends Controller
                                 ->where('approved', 0)
                                 ->get();
 
-        return view('approval', compact('tab', 'approvedApplications','pendingApplications'));
+        $approvedApplicationsGrouped = $approvedApplications->groupBy('work_id');
+        $pendingApplicationsGrouped = $pendingApplications->groupBy('work_id');
+
+        return view('approval', compact('tab', 'approvedApplicationsGrouped','pendingApplicationsGrouped'));
     }
 
     public function approvalDetail($work_id){
@@ -114,10 +119,25 @@ class IndexController extends Controller
                                 ->where('work_id', $work_id)
                                 ->where('approved', 0)
                                 ->first();
-        $restArray = json_decode($pendingApplication->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
 
+        $rests = Application::where('work_id', $work_id)
+                                ->get();
 
-        return view('approval-confirm', compact('staff','pendingApplication','restArray'));
+        return view('approval-confirm', compact('staff','pendingApplication','rests'));
     }
 
+    public function approvalComplete($work_id){
+
+        $staff = Auth::guard('staff')->user();
+
+        $approvedApplication = Application::with('staff')
+                                ->where('work_id', $work_id)
+                                ->where('approved', 1)
+                                ->first();
+
+        $rests = Application::where('work_id', $work_id)
+                                ->get();
+
+        return view('approval-complete', compact('staff','approvedApplication','rests'));
+    }
 }

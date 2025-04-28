@@ -14,21 +14,22 @@
 <div class="container">
   <h1>勤怠詳細</h1>
   <div class="table">
-  <table>
+    <table>
       <tr>
         <th>名前</th>
-        <td>{{$staff['name']}}</td>
+        <td>{{ $approvedApplication->staff->name }}</td>
       </tr>
 
       <tr>
         <th>日付</th>
-        <td> {{ \Carbon\Carbon::parse($application->date)->format('Y年n月j日') }}</td>
+        <td>{{ \Carbon\Carbon::parse($approvedApplication->date)->format('Y/n/j') }}</td>
       </tr>
+
       <tr>
         <th>出勤</th>
-        <td>{{ \Carbon\Carbon::parse($application->clock_in)->format('H:i') }}</td>
+        <td>{{ \Carbon\Carbon::parse($approvedApplication->clock_in)->format('H:i') }}</td>
         <td>~</td>
-        <td>{{ \Carbon\Carbon::parse($application->clock_out)->format('H:i') }}</td>
+        <td>{{ \Carbon\Carbon::parse($approvedApplication->clock_out)->format('H:i') }}</td>
       </tr>
 
       @foreach ($rests as $index => $rest)
@@ -42,15 +43,11 @@
 
       <tr>
         <th>コメント</th>
-        <td>{{ $application->comment }}</td>
+        <td>{{ $approvedApplication->comment }}</td>
       </tr>
-  </table>
+    </table>
   </div>
-  <div class="word">
-    <p>※承認待ちのため編集できません</p>
-  </div>
-
-</form>
+  <button type="submit" class="edit" disabled style="pointer-events: none; opacity: 0.5;">承認済みです。</button>
 </div>
 @endsection
 

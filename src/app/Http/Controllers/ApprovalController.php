@@ -24,7 +24,10 @@ class ApprovalController extends Controller
                                 ->where('approved', 0)
                                 ->get();
 
-        return view('admin.approval', compact('tab', 'approvedApplications','pendingApplications'));
+        $approvedApplicationsGrouped = $approvedApplications->groupBy('work_id');
+        $pendingApplicationsGrouped = $pendingApplications->groupBy('work_id');
+
+        return view('admin.approval', compact('tab', 'approvedApplicationsGrouped','pendingApplicationsGrouped'));
     }
 
     public function approvalDetail($work_id){
@@ -33,37 +36,88 @@ class ApprovalController extends Controller
                                 ->where('approved', 0)
                                 ->first();
 
-        $restArray = json_decode($pendingApplication->rests, true) ?? ['rest_in' => [], 'rest_out' => []];
+        $rests = Application::where('work_id', $work_id)
+                                ->get();
+
+        $approvedApplications  = Application::with('staff')
+                                ->where('approved', 1)
+                                ->get();
 
 
-        return view('admin.approval-confirm', compact('pendingApplication','restArray'));
+        return view('admin.approval-confirm', compact('pendingApplication','rests','approvedApplications'));
     }
 
-    public function update(Request $request ,$work_id){
 
-        $application =Application::findOrFail($work_id);
-        $application->approved = true;
-        $application->save();
+    public function update(Request $request, $work_id)
+    {
+        Application::where('work_id', $work_id)
+                    ->update(['approved' => true]);
+
+    $approvedApplications = Application::where('work_id', $work_id)
+                                    ->where('approved', 1)
+                                    ->get();
 
         $work = Work::findOrFail($work_id);
-        $work->update([
-            'clock_in' => $request->input('clock_in'),
-            'clock_out' => $request->input('clock_out'),
-            'comment' => $request->input('comment'),
-        ]);
 
-        $restIns = $request->input('rest_in');
-        $restOuts = $request->input('rest_out');
+        $total_rest_seconds = 0;
 
         $rests = Rest::where('work_id', $work_id)->get();
 
         foreach ($rests as $index => $rest) {
-            $rest->update([
-                'rest_in' => $restIns[$index] ?? null,
-                'rest_out' => $restOuts[$index] ?? null,
-            ]);
-            session()->flash('success', '勤怠情報を更新しました。');
+            $application = $approvedApplications[$index] ?? null;
+
+            if ($application && !empty($application->rest_in) && !empty($application->rest_out)) {
+                $restIn = Carbon::parse($application->rest_in);
+                $restOut = Carbon::parse($application->rest_out);
+                $total_rest_seconds += $restOut->diffInSeconds($restIn);
+
+                $rest->update([
+                    'rest_in' => $restIn,
+                    'rest_out' => $restOut,
+                    'total_rest_time' =>$total_rest_seconds,
+                ]);
+
+            }
         }
-        return view('', compact('work','rests'));
-}
+
+        $firstApplication = $approvedApplications->first();
+        if ($firstApplication) {
+            $clockIn = Carbon::parse($firstApplication->clock_in);
+            $clockOut = Carbon::parse($firstApplication->clock_out);
+
+            $work_seconds = $clockOut->diffInSeconds($clockIn);
+            $total_work_seconds = $work_seconds - $total_rest_seconds;
+
+            $formattedTotalWorkTime = gmdate('H:i:s', $total_work_seconds);
+            $formattedTotalRestTime = gmdate('H:i:s', $total_rest_seconds);
+
+            $work->update([
+                'clock_in' => $firstApplication->clock_in,
+                'clock_out' => $firstApplication->clock_out,
+                'comment' => $firstApplication->comment,
+                'total_work_time' => $formattedTotalWorkTime,
+                'total_rest_time' => $formattedTotalRestTime,
+            ]);
+        }
+
+        session()->flash('success', '勤怠情報を更新しました。');
+        return redirect()->route('admin.index')->with('success', '勤怠情報を更新しました。');
+    }
+
+
+    public function approvalComplete($work_id){
+
+        $staff = Auth::guard('staff')->user();
+
+        $approvedApplication = Application::with('staff')
+                                ->where('work_id', $work_id)
+                                ->where('approved', 1)
+                                ->first();
+
+        $rests = Application::where('work_id', $work_id)
+                                ->get();
+
+        return view('admin.approval-complete', compact('staff','approvedApplication','rests'));
+    }
+
 }

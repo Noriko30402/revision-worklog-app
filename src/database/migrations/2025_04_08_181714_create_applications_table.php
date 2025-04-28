@@ -19,9 +19,10 @@ class CreateApplicationsTable extends Migration
             $table->string('date');
             $table->time('clock_in')->nullable()->default(null);
             $table->time('clock_out')->nullable();
+            $table->time('rest_in')->nullable()->default(null);
+            $table->time('rest_out')->nullable();
             $table->foreignId('work_id')->constrained('works')->onDelete('cascade');
             $table->string('comment');
-            $table->json('rests')->nullable();
             $table->boolean('approved')->default(0);
             $table->timestamps();
         });

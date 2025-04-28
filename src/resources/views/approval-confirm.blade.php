@@ -31,12 +31,12 @@
         <td>{{ \Carbon\Carbon::parse($pendingApplication->clock_out)->format('H:i') }}</td>
       </tr>
 
-      @foreach ($restArray['rest_in'] as $i => $in)
+      @foreach ($rests as $index => $rest)
       <tr>
-        <th>休憩{{ $i + 1 }}</th>
-        <td>{{ $in }}</td>
+        <th>休憩{{ $index + 1 }}</th>
+        <td>{{ \Carbon\Carbon::parse($rest->rest_in)->format('H:i') }}</td>
         <td>~</td>
-        <td>{{ $restArray['rest_out'][$i] ?? '' }}</td>
+        <td>{{ \Carbon\Carbon::parse($rest->rest_out)->format('H:i') }}</td>
       </tr>
       @endforeach
 

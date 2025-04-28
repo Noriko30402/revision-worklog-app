@@ -10,7 +10,7 @@ class Application extends Model
     use HasFactory;
 
     protected $fillable = [
-        'work_id', 'staff_id', 'clock_in', 'clock_out', 'rest_in', 'rest_out', 'date', 'comment','rests', 
+        'work_id', 'staff_id', 'clock_in', 'clock_out', 'rest_in', 'rest_out', 'date', 'comment','rest_in','rest_out'
     ];
 
     public function staff()

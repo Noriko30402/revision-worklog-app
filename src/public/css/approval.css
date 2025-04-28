@@ -7,3 +7,10 @@
   font-size: 20px;
   font-weight: bold;
 }
+
+.table th, .table td {
+  padding: 10px;
+  font-size: 18px;
+  border-bottom: 2px solid #ddd;
+  text-align: center;
+}
