@@ -76,7 +76,6 @@ class ApprovalController extends Controller
                     'rest_out' => $restOut,
                     'total_rest_time' =>$total_rest_seconds,
                 ]);
-
             }
         }
 
@@ -101,7 +100,7 @@ class ApprovalController extends Controller
         }
 
         session()->flash('success', '勤怠情報を更新しました。');
-        return redirect()->route('admin.index')->with('success', '勤怠情報を更新しました。');
+        return redirect()->route('approval.detail')->with('success', '勤怠情報を更新しました。');
     }
 
 
@@ -119,5 +118,4 @@ class ApprovalController extends Controller
 
         return view('admin.approval-complete', compact('staff','approvedApplication','rests'));
     }
-
 }

@@ -59,15 +59,20 @@
     @error('clock_in')
       <span class="invalid-feedback">{{ $message }}</span>
     @enderror
+
     @error('clock_out')
       <span class="invalid-feedback">{{ $message }}</span>
     @enderror
-    @error('rest_in')
-      <span class="invalid-feedback">{{ $message }}</span>
+
+    @foreach ($rests as $index => $rest)
+    @error("rest_in.$index")
+        <span class="invalid-feedback">{{ $message }}</span>
     @enderror
-    @error('rest_out')
-      <span class="invalid-feedback">{{ $message }}</span>
+    @error("rest_out.$index")
+        <span class="invalid-feedback">{{ $message }}</span>
     @enderror
+    @endforeach
+
     @error('comment')
       <span class="invalid-feedback">{{ $message }}</span>
     @enderror

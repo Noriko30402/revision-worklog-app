@@ -27,7 +27,14 @@ class SubmitWorkRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => 'required',
+            'clock_in' => ['required'],
+            'clock_out' => ['required'],
+            'rest_in' => ['nullable', 'array'],
+            'rest_in.*' => ['nullable'],
+            'rest_out' => ['nullable', 'array'],
+            'rest_out.*' => ['nullable'],
+
+            'comment' => ['required', 'string'],
         ];
     }
 
@@ -38,41 +45,49 @@ class SubmitWorkRequest extends FormRequest
 
         ];
     }
-    // public function withValidator($validator)
-    // {
-    //     $validator->after(function ($validator) {
-    //         if ($this->clock_in >= $this->clock_out) {
-    //             $validator->errors()->add('clock_in', '出勤時間は退勤時間より前でなければなりません。');
-    //         }
-    //     });
-    // }
 
-    // public function withValidator($validator)
-    // {
-    //     $date = Carbon::parse($this->input('date'))->format('Y-m-d');
-    //     $clockIn = Carbon::parse($date . ' ' . $this->input('clock_in'));
-    //     $clockOut = Carbon::parse($date . ' ' . $this->input('clock_out'));
-    //     $restStartRaw = Carbon::parse($date . ' ' . $this->input('rest_in'));
-    //     $restEndRaw = Carbon::parse($date . ' ' . $this->input('rest_out'));
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $clock_in = $this->input('clock_in');
+            $clock_out = $this->input('clock_out');
+            $rest_ins = $this->input('rest_in', []);
+            $rest_outs = $this->input('rest_out', []);
 
-    //     $restStart = $restStartRaw ? Carbon::parse($date . ' ' . (is_array($restStartRaw) ? reset($restStartRaw) : $restStartRaw)) : null;
-    //     $restEnd = $restEndRaw ? Carbon::parse($date . ' ' . (is_array($restEndRaw) ? reset($restEndRaw) : $restEndRaw)) : null;
+        if ($clock_in && $clock_out) {
+            $clockIn = \Carbon\Carbon::createFromFormat('H:i', $clock_in);
+            $clockOut = \Carbon\Carbon::createFromFormat('H:i', $clock_out);
 
+        if ($clockIn >= $clockOut) {
+            $validator->errors()->add('clock_in', '出勤時間もしくは退勤時間が不適切な値です');
+            }
 
-    //     $validator->after(function ($validator) use($date, $clockIn,$clockOut,$restStart,$restEnd) {
+        $hasRestError = false;
 
-    //         if($clockIn >$clockOut ){
-    //             $validator->errors()->add('clock_in', '出勤時間もしくは退勤時間が不適切な値です。');
-    //         }
+        foreach ($rest_ins as $index => $rest_in) {
+            if (!empty($rest_in)) {
+                $restIn = \Carbon\Carbon::createFromFormat('H:i', $rest_in);
+                    if ($restIn < $clockIn || $restIn > $clockOut) {
+                        if (!$hasRestError) {
+                            $validator->errors()->add("rest_in.$index", '休憩開始時間が勤務時間外です');
+                            $hasRestError = true;
+                        }
+                    }
+                }
+            }
 
-    //         if ($restStart && ($restStart->lt($clockIn) || $restStart->gt($clockOut))) {
-    //             $validator->errors()->add('rest_in', '休憩時間が勤務時間外です。');
-    //         }
-
-    //         if ($restEnd && ($restEnd->lt($clockIn) || $restEnd->gt($clockOut))) {
-    //             $validator->errors()->add('rest_out', '休憩時間が勤務時間外です。');
-    //         }
-
-    //     });
-    // }
+        foreach ($rest_outs as $index => $rest_out) {
+            if (!empty($rest_out)) {
+                $restOut = \Carbon\Carbon::createFromFormat('H:i', $rest_out);
+                    if ($restOut < $clockIn || $restOut > $clockOut) {
+                        if (!$hasRestError) {
+                            $validator->errors()->add("rest_out.$index", '休憩終了時間が勤務時間外です');
+                            $hasRestError = true;
+                        }
+                    }
+                }
+            }
+            }
+        });
+    }
 }

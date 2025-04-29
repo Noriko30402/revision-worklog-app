@@ -68,13 +68,13 @@ class IndexController extends Controller
         return view('detail',compact('work','staff','rests'));
     }
 
-    public function edit(Request $request,$work_id){
+    public function edit(SubmitWorkRequest $request,$work_id){
 
+        $validated = $request->validated();
         $staff = Auth::guard('staff')->user();
         $rest_ins = $request->input('rest_in');
         $rest_outs = $request->input('rest_out');
 
-    // 休憩ごとに1行ずつ保存する
         foreach ($rest_ins as $index => $rest_in) {
             $application =  Application::create([
                 'staff_id' => $staff->id,

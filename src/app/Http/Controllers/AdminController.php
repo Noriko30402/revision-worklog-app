@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubmitWorkRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Work;
@@ -52,7 +53,7 @@ class AdminController extends Controller
         return view('admin.admin-detail',compact('work','rests'));
     }
 
-    public function edit(Request $request, $work_id)
+    public function edit(SubmitWorkRequest $request, $work_id)
     {
         $restIns = $request->input('rest_in');
         $restOuts = $request->input('rest_out');

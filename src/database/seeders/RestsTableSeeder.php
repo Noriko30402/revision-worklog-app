@@ -64,7 +64,7 @@ class RestsTableSeeder extends Seeder
                     'start' => $restIn,
                     'end' => $restOut,
             ];
-        
+
             // Restレコードを作成
             Rest::create([
                     'staff_id' => $work->staff_id,
@@ -91,7 +91,7 @@ class RestsTableSeeder extends Seeder
 
             // 勤務時間から休憩時間を差し引く
             $actualWorkMinutes = $workMinutes - $totalRestMinutes;
-        
+
              // 15分単位に丸める
             $actualWorkMinutes = floor($actualWorkMinutes / 15) * 15;
 

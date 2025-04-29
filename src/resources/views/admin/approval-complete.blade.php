@@ -47,7 +47,7 @@
       </tr>
     </table>
   </div>
-  <button type="submit" class="edit" disabled style="pointer-events: none; opacity: 0.5;">承認済みです。</button>
+  <button type="submit" class="edit" disabled style="pointer-events: none; opacity: 0.5;">承認済み</button>
   </div>
 </div>
 @endsection

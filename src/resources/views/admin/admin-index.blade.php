@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠一覧')
+@section('title','一覧「日別」')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/index.css')  }}">

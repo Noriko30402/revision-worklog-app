@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠一覧')
+@section('title','全スタッフ情報')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/staff.css')  }}">

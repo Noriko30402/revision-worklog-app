@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠詳細')
+@section('title','勤怠')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/detail.css') }}">
@@ -17,7 +17,7 @@
     </div>
   @endif
 
-  <form action="{{ route('admin.approval.detail', ['work_id' => $work->id])}}" method="post">
+  <form action="{{ route('admin.edit', ['work_id' => $work->id])}}" method="post">
     @csrf
     @method('PUT')
   <div class="table">

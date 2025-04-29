@@ -49,8 +49,11 @@
       </tr>
     </table>
   </div>
-  <button type="submit" class="edit">承認</button>
-</form>
+  @if ($pendingApplication->approved)
+    <button type="button" class="approved" disabled>承認済み</button>
+  @else
+    <button type="submit" class="edit">承認</button>
+  @endif</form>
 </div>
 @endsection
 
