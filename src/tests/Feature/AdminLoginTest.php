@@ -3,17 +3,17 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\DatabaseSeeder;
 use Tests\TestCase;
 
-class StaffLoginTest extends TestCase
+class AdminLoginTest extends TestCase
 {
     /**
      * A basic feature test example.
      *
      * @return void
      */
-
     use RefreshDatabase;
 
     protected function setUp(): void
@@ -25,7 +25,7 @@ class StaffLoginTest extends TestCase
       //ログイン--メアドバリデーション
     public function test_login_user_validate_email()
     {
-        $response = $this->post('staff/login', [
+        $response = $this->post('admin/login', [
             'email' => "",
             'password' => "password",
         ]);
@@ -39,7 +39,7 @@ class StaffLoginTest extends TestCase
 
     public function test_login_user_validate_password()
     {
-        $response = $this->post('staff/login', [
+        $response = $this->post('admin/login', [
             'email' => "general2@gmail.com",
             'password' => "",
         ]);
@@ -54,7 +54,7 @@ class StaffLoginTest extends TestCase
     //ログイン--不一致
     public function test_login_user_validate_user()
     {
-        $response = $this->post('staff/login', [
+        $response = $this->post('admin/login', [
             'email' => "general2@gmail.com",
             'password' => "password123",
         ]);
