@@ -12,6 +12,7 @@ use App\Models\Application;
 
 class ApprovalController extends Controller
 {
+// スタッフからの申請一覧
     public function approval(Request $request){
 
         $tab = $request->input('tab', 'approval');
@@ -46,7 +47,6 @@ class ApprovalController extends Controller
 
         return view('admin.approval-confirm', compact('pendingApplication','rests','approvedApplications'));
     }
-
 
     public function update(Request $request, $work_id)
     {
@@ -98,9 +98,14 @@ class ApprovalController extends Controller
                 'total_rest_time' => $formattedTotalRestTime,
             ]);
         }
+        $pendingApplication = Application::where('work_id', $work_id)
+        ->first();
+        $rests = Application::where('work_id', $work_id)
+        ->get();
 
-        session()->flash('success', '勤怠情報を更新しました。');
-        return redirect()->route('approval.detail')->with('success', '勤怠情報を更新しました。');
+
+        return view('admin.approval-confirm', compact('pendingApplication','rests'))
+        ->with('success', '勤怠情報を更新しました。');
     }
 
 

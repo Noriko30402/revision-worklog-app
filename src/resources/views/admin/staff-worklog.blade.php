@@ -75,6 +75,11 @@
         </tbody>
     </table>
   </div>
+      <!-- CSVエクスポートボタン -->
+  <div class="export-form">
+    <a href="{{ route('staff.export', ['staff_id' => $staff->id]) }}" class="csv">CSV出力</a>
+  </div>
+
 </div>
 
 @endsection

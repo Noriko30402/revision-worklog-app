@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠')
+@section('title','勤怠詳細')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/detail.css') }}">
@@ -16,7 +16,6 @@
       {{ session('success') }}
     </div>
   @endif
-
   <form action="{{ route('admin.edit', ['work_id' => $work->id])}}" method="post">
     @csrf
     @method('PUT')
@@ -68,13 +67,15 @@
       @error('clock_out')
         <span class="invalid-feedback">{{ $message }}</span>
       @enderror
-      @error('rest_in')
-        <span class="invalid-feedback">{{ $message }}</span>
+      @foreach ($rests as $index => $rest)
+      @error("rest_in.$index")
+          <span class="invalid-feedback">{{ $message }}</span>
       @enderror
-      @error('rest_out')
-        <span class="invalid-feedback">{{ $message }}</span>
+      @error("rest_out.$index")
+          <span class="invalid-feedback">{{ $message }}</span>
       @enderror
-      @error('comment')
+      @endforeach
+        @error('comment')
         <span class="invalid-feedback">{{ $message }}</span>
       @enderror
     </div>

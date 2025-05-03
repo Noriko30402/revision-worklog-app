@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠詳細')
+@section('title','承認済み詳細')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/detail.css')  }}">
@@ -9,7 +9,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.staff-header')
+@include('components.admin-header')
 
 <div class="container">
   <h1>勤怠詳細</h1>
@@ -47,7 +47,8 @@
       </tr>
     </table>
   </div>
-  <button type="submit" class="edit" disabled style="pointer-events: none; opacity: 0.5;">承認済み</button>
+  <div class="button-wrapper">
+    <button type="submit" class="edit gray" disabled>承認済み</button>
   </div>
 </div>
 @endsection

@@ -43,6 +43,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('/approval/detail/{work_id}',[ApprovalController::class,'approvalDetail'])->name('admin.approval.detail');
     Route::get('/detail/{work_id}/complete',[ApprovalController::class,'approvalComplete'])->name('admin.approval.complete');
     Route::post('/approval/detail/{work_id}', [ApprovalController::class, 'update'])->name('approval.update');
+    Route::get('/staff/{staff_id}/export', [AdminController::class, 'export'])->name('staff.export');
 });
 
 

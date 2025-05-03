@@ -71,6 +71,17 @@ border-radius: 20px;
   text-align: center;
 }
 
+.export-form{
+  padding: 15px;
+  background-color: #000;
+  color: #ffff;
+  width: 13%;
+  margin-top: 20px;
+  margin-left: auto;
+  text-align: center;
+  border-radius: 10px;
+}
+
 @media (min-width: 768px) and (max-width: 850px) {
   .container{
     margin: 0 auto;

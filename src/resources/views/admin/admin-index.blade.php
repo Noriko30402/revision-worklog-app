@@ -37,7 +37,7 @@
             <td>{{ $work->staff->name }}</td>
             <td>{{ \Carbon\Carbon::parse($work->clock_in)->format('H:i') }}</td>
             <td>{{ \Carbon\Carbon::parse($work->clock_out)->format('H:i') }}</td>
-            <td>{{ \Carbon\Carbon::parse($rest->total_rest_time)->format('H:i') }}</td>
+            <td>{{ \Carbon\Carbon::parse($work->total_rest_time)->format('H:i') }}</td>
             <td>{{ \Carbon\Carbon::parse($work->total_work_time)->format('H:i') }}</td>
             <td><a href="{{  route('admin.detail', ['work_id' => $work->id])  }}">詳細</a></td>
           </tr>

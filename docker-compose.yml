@@ -10,6 +10,13 @@ services:
     depends_on:
       - php
 
+  selenium:
+    image: seleniarm/standalone-chromium
+    container_name: selenium
+    ports:
+    - "9515:4444"
+
+
   php:
     build: ./docker/php
     volumes:
@@ -39,3 +46,4 @@ services:
       - mysql
     ports:
       - 8080:80
+

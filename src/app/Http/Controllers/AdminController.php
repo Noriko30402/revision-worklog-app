@@ -10,6 +10,8 @@ use App\Models\Rest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Application;
 use App\Models\Staff;
+use Illuminate\Support\Facades\Date;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class AdminController extends Controller
@@ -37,7 +39,7 @@ class AdminController extends Controller
     }
 
     return view('admin.admin-index',compact('displayDate1','displayDate2','works',
-                                            'rest','prevDate','nextDate'));
+                                            'rests','prevDate','nextDate'));
 }
 
     public function detail($work_id){
@@ -53,11 +55,12 @@ class AdminController extends Controller
         return view('admin.admin-detail',compact('work','rests'));
     }
 
+// 管理者が自由に修正
     public function edit(SubmitWorkRequest $request, $work_id)
     {
+        $validated = $request->validated();
         $restIns = $request->input('rest_in');
         $restOuts = $request->input('rest_out');
-
         $rests = Rest::where('work_id', $work_id)->get();
 
         foreach ($rests as $index => $rest) {
@@ -158,4 +161,40 @@ class AdminController extends Controller
         return view('admin.staff-worklog', compact('worksByDate', 'works',
                     'displayDate1', 'rests', 'dates','prevMonth','nextMonth','staff','staff_id'));
     }
+
+public function export($staff_id, Request $request)
+{
+    $works = Work::where('staff_id', $staff_id)->get();
+
+    $csvHeader = ['日付', '出勤', '退勤', '休憩', '勤務時間'];
+
+    $staff = Staff::find($staff_id);
+
+    // ストリームレスポンスを使用してCSVファイルを出力
+    $response = new StreamedResponse(function () use ($works, $csvHeader) {
+        $output = fopen('php://output', 'w');
+
+        // ヘッダーをCSVに書き込む
+        fputcsv($output, $csvHeader);
+
+        // 勤怠データをCSVに書き込む
+        foreach ($works as $work) {
+            $row = [
+                $work->date->isoFormat('M/D（ddd）'),
+                \Carbon\Carbon::parse($work->clock_in)->format('H:i'),
+                \Carbon\Carbon::parse($work->clock_out)->format('H:i'),
+                \Carbon\Carbon::parse($work->total_rest_time)->format('H:i'),
+                \Carbon\Carbon::parse($work->total_work_time)->format('H:i')
+            ];
+            fputcsv($output, $row);
+        }
+
+        fclose($output);
+    }, 200, [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $staff->name . 'の勤怠.csv"',
+    ]);
+
+    return $response;
+}
 }

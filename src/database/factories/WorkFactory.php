@@ -19,40 +19,27 @@ class WorkFactory extends Factory
      */
     public function definition()
     {
-        $baseDate = Carbon::now()->startOfMonth()->copy();
+        $baseDate = Carbon::now()->startOfMonth();
         $randomDate = $baseDate->copy()->addDays(rand(0, 30));
-
+    
         $clockMinutes = [0, 15, 30, 45];
         $clockIn = $randomDate->copy()
-                ->addHours(rand(8, 9))
-                ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
-
+            ->addHours(rand(8, 9))
+            ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
+    
         $clockOut = $randomDate->copy()
-                ->addHours(rand(17, 18))
-                ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
-
-        // 休憩時間をランダムに設定（Restテーブルから紐付ける）
-        $rest = Rest::where('date', $randomDate->toDateString())
-                        ->where('staff_id', 1)
-                        ->first();
-
-        $totalWorkTime = gmdate('H:i:s', $clockOut->diffInSeconds($clockIn));
-
-        // ランダムなスタッフIDを取得
+            ->addHours(rand(17, 18))
+            ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
+    
         $randomStaff = Staff::inRandomOrder()->first();
-        $staffId = $randomStaff ? $randomStaff->id : 1; // fallbackで1を入れておく
-
-        // 該当スタッフの休憩データを探す（ある場合）
-        $rest = Rest::where('date', $randomDate->toDateString())
-                ->where('staff_id', $staffId)
-                ->first();
-
+        $staffId = $randomStaff ? $randomStaff->id : 1;
+    
         return [
             'staff_id' => $staffId,
             'date' => $randomDate->toDateString(),
             'clock_in' => $clockIn->toTimeString(),
             'clock_out' => $clockOut->toTimeString(),
-            'total_work_time' => $totalWorkTime,
+            'total_work_time' => '00:00:00', // あとで更新する
         ];
     }
 }

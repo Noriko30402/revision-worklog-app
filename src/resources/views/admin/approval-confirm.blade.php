@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title','勤怠詳細')
+@section('title','承認画面')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/detail.css')  }}">
@@ -49,11 +49,14 @@
       </tr>
     </table>
   </div>
-  @if ($pendingApplication->approved)
-    <button type="button" class="approved" disabled>承認済み</button>
-  @else
-    <button type="submit" class="edit">承認</button>
-  @endif</form>
+  <div class="button-wrapper">
+    @if ($pendingApplication->approved)
+      <button type="button" class="edit gray" disabled>承認済み</button>
+    @else
+      <button type="submit" class="edit">承認</button>
+    @endif
+  </div>
+  </form>
 </div>
 @endsection
 
