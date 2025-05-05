@@ -47,6 +47,7 @@ button.edit.gray {
   justify-content: flex-end;
 }
 
+
 table{
   width: 100%;
 }
@@ -98,6 +99,8 @@ font-size: 20px;
 text-align: right;
 margin-top: 5px
 }
+
+
 
 
 @media (min-width: 768px) and (max-width: 850px) {

@@ -14,7 +14,7 @@ class StaffLoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login'); // 管理者ログイン画面を表示
+        return view('auth.login');
     }
 
     public function login(LoginRequest $request)

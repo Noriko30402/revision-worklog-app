@@ -24,7 +24,6 @@ class IndexController extends Controller
 
         $staff = Auth::guard('staff')->user();
 
-            // その月のデータを取得
         $works = Work::whereYear('date', $currentMonth->year)
                 ->whereMonth('date', $currentMonth->month)
                 ->where('staff_id', $staff->id)
@@ -35,8 +34,6 @@ class IndexController extends Controller
                         ->where('staff_id', $staff->id)
                         ->get();
 
-
-    // 月の開始日と終了日
     $startDate = $currentMonth->copy()->startOfMonth();
     $endDate = $currentMonth->copy()->endOfMonth();
 
@@ -47,7 +44,6 @@ class IndexController extends Controller
             $currentDate->addDay();
         }
 
-        // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
 
         return view('index', compact( 'worksByDate', 'works',

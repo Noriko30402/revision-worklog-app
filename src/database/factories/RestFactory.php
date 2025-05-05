@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Rest;
-use App\Models\Work;
 use Carbon\Carbon;
 
 

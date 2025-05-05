@@ -26,7 +26,6 @@ class AdminController extends Controller
     $prevDate = $currentDate->copy()->subDay()->format('Y/m/d');
     $nextDate = $currentDate->copy()->addDay()->format('Y/m/d');
 
-    // その月のデータを取得
     $works = Work::with('staff')
             ->whereDate('date', $currentDate->toDateString())
             ->get();
@@ -55,7 +54,6 @@ class AdminController extends Controller
         return view('admin.admin-detail',compact('work','rests'));
     }
 
-// 管理者が自由に修正
     public function edit(SubmitWorkRequest $request, $work_id)
     {
         $validated = $request->validated();
@@ -90,7 +88,7 @@ class AdminController extends Controller
                                     [$h, $m, $s] = explode(':', $rest->total_rest_time);
                                     return ($h * 3600) + ($m * 60) + $s;
                                 });
-        // 出勤・退勤時刻
+
         $clock_in = Carbon::parse($request->input('clock_in'));
         $clock_out = Carbon::parse($request->input('clock_out'));
         $workSeconds = $clock_out->diffInSeconds($clock_in);
@@ -129,7 +127,6 @@ class AdminController extends Controller
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y/m');
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y/m');
 
-        // その月のデータを取得
         $works = Work::with('staff')
                 ->whereYear('date', $currentMonth->year)
                 ->whereMonth('date', $currentMonth->month)
@@ -141,8 +138,6 @@ class AdminController extends Controller
                 ->where('staff_id', $staff_id)
                 ->get();
 
-
-            // 月の開始日と終了日
         $startDate = $currentMonth->copy()->startOfMonth();
         $endDate = $currentMonth->copy()->endOfMonth();
 
@@ -155,7 +150,6 @@ class AdminController extends Controller
 
         $staff = Staff::findOrFail($staff_id);
 
-        // 日付をキーにしてデータをまとめる
         $worksByDate = $works->keyBy(fn($work) => Carbon::parse($work->date)->toDateString());
 
         return view('admin.staff-worklog', compact('worksByDate', 'works',
@@ -170,14 +164,11 @@ public function export($staff_id, Request $request)
 
     $staff = Staff::find($staff_id);
 
-    // ストリームレスポンスを使用してCSVファイルを出力
     $response = new StreamedResponse(function () use ($works, $csvHeader) {
         $output = fopen('php://output', 'w');
 
-        // ヘッダーをCSVに書き込む
         fputcsv($output, $csvHeader);
 
-        // 勤怠データをCSVに書き込む
         foreach ($works as $work) {
             $row = [
                 $work->date->isoFormat('M/D（ddd）'),

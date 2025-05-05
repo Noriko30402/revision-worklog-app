@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Laravel\Dusk\TestCase as BaseTestCase;
@@ -31,37 +30,11 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver()
     {
-        // $options = (new ChromeOptions)->addArguments(collect([
-        //     $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1920,1080',
-        // ])->unless($this->hasHeadlessDisabled(), function ($items) {
-        //     return $items->merge([
-        //         '--disable-gpu',
-        //         '--headless',
-        //     ]);
-        // })->all());
-
-        // return RemoteWebDriver::create(
-        //     $_ENV['DUSK_DRIVER_URL'] ?? 'http://localhost:9515',
-        //     'http://selenium:4444/wd/hub',
-        //     DesiredCapabilities::chrome()->setCapability(
-        //         ChromeOptions::CAPABILITY, $options
-        //     )
-        // );
-
-        $options = (new \Facebook\WebDriver\Chrome\ChromeOptions())->addArguments([
-            '--disable-gpu',
-            '--headless',
-            '--no-sandbox',
-            '--window-size=1920,1080',
-        ]);
-    
-        return RemoteWebDriver::create(
-            'http://selenium:4444/wd/hub',
-            DesiredCapabilities::chrome()->setCapability(
-                \Facebook\WebDriver\Chrome\ChromeOptions::CAPABILITY, $options
-            )
-        );
-    }
+            return RemoteWebDriver::create(
+                'http://selenium:4444/wd/hub',  // ← docker-compose の service 名
+                DesiredCapabilities::chrome()
+            );
+        }
 
     /**
      * Determine whether the Dusk command has disabled headless mode.

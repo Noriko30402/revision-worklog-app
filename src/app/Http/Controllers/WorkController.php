@@ -67,7 +67,6 @@ class WorkController extends Controller
             return view('worklog',compact('formatted_date', 'now_time', 'status'));
     }
 
-    // 勤務開始処理
     private function startWork($lastWork,$staff,$now_time,$now_date,$formatted_date)
     {
         $today = Carbon::today();
@@ -89,7 +88,6 @@ class WorkController extends Controller
         }
     }
 
-         // 休憩開始処理
     private function startRest($lastWork, $staff, $now_time, $now_date){
 
         if (!$lastWork) {
@@ -105,7 +103,6 @@ class WorkController extends Controller
         $rest->work_id = $work_id;
         $rest->save();
 
-         // 勤務ステータスを休憩中に変更
         $lastWork->status = 2;
         $lastWork->save();
         session(['work_status' => 2]);
@@ -133,7 +130,6 @@ class WorkController extends Controller
             $rest->total_rest_time = $formattedRestTime;
             $rest->save();
 
-        // 勤務ステータスを勤務中に戻す
         if ($lastWork) {
             $lastWork->status = 1;
             $lastWork->save();
@@ -150,7 +146,6 @@ class WorkController extends Controller
         $clock_out = Carbon::parse($now_time);
         $work_time = $clock_out->diffInSeconds($clock_in);
 
-        // 休憩時間を取得
         $total_rest_time = Rest::where('work_id', $lastWork->id)
                         ->whereNotNull('rest_out')
                         ->get()

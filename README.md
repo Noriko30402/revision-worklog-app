@@ -82,6 +82,7 @@ mailtrapというツールを使用しています。<br>
 MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。　
 
 ## 6. テストアカウント
+###　スタッフ
 名前: 一般ユーザ<br>
 メールアドレス: general1@gmail.com　<br>
 パスワード: password<br>
@@ -89,6 +90,20 @@ MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
 名前: 一般ユーザ<br>
 メールアドレス: general2@gmail.com<br>
 パスワード: password
+
+##　管理者
+名前：管理者1<br>
+メールアドレス: admin-one@test.com<br>
+パスワード: password<br>
+
+名前：管理者2<br>
+メールアドレス: admin-two@test.com<br>
+パスワード: password<br>
+
+名前：管理者3<br>
+メールアドレス: admin-tree@test.com<br>
+パスワード: password<br>
+
 
 ### PHPUnitを利用したテスト環境構築方法
 

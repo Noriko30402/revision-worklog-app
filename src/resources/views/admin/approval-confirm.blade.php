@@ -10,7 +10,7 @@
 <!-- 本体 -->
 @section('content')
 
-@include('components.staff-header')
+@include('components.admin-header')
 
 <div class="container">
   <h1>勤怠詳細</h1>
