@@ -91,7 +91,7 @@ MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
 メールアドレス: general2@gmail.com<br>
 パスワード: password
 
-##　管理者<br>
+##  管理者<br>
 名前：管理者1<br>
 メールアドレス: admin-one@test.com<br>
 パスワード: password<br>
@@ -119,10 +119,10 @@ php artisan migrate:fresh --env=testing
 ./vendor/bin/phpunit
 ```
 テスト方法
-'''
+```
 docker-compose exec mysql bash
 php artisan test
-'''
+```
 
 ## 5. 使用技術(実行環境)
 
