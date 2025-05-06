@@ -21,25 +21,25 @@ class WorkFactory extends Factory
     {
         $baseDate = Carbon::now()->startOfMonth();
         $randomDate = $baseDate->copy()->addDays(rand(0, 30));
-    
+
         $clockMinutes = [0, 15, 30, 45];
         $clockIn = $randomDate->copy()
             ->addHours(rand(8, 9))
             ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
-    
+
         $clockOut = $randomDate->copy()
             ->addHours(rand(17, 18))
             ->addMinutes($clockMinutes[array_rand($clockMinutes)]);
-    
+
         $randomStaff = Staff::inRandomOrder()->first();
         $staffId = $randomStaff ? $randomStaff->id : 1;
-    
+
         return [
             'staff_id' => $staffId,
             'date' => $randomDate->toDateString(),
             'clock_in' => $clockIn->toTimeString(),
             'clock_out' => $clockOut->toTimeString(),
-            'total_work_time' => '00:00:00', // あとで更新する
+            'total_work_time' => '00:00:00',
         ];
     }
 }

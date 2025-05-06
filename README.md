@@ -82,7 +82,7 @@ mailtrapというツールを使用しています。<br>
 MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。　
 
 ## 6. テストアカウント
-###　スタッフ
+### スタッフ<br>
 名前: 一般ユーザ<br>
 メールアドレス: general1@gmail.com　<br>
 パスワード: password<br>
@@ -91,7 +91,7 @@ MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
 メールアドレス: general2@gmail.com<br>
 パスワード: password
 
-##　管理者
+##　管理者<br>
 名前：管理者1<br>
 メールアドレス: admin-one@test.com<br>
 パスワード: password<br>
@@ -104,7 +104,7 @@ MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。
 メールアドレス: admin-tree@test.com<br>
 パスワード: password<br>
 
-
+ 
 ### PHPUnitを利用したテスト環境構築方法
 
 ```
@@ -118,7 +118,11 @@ docker-compose exec php bash
 php artisan migrate:fresh --env=testing
 ./vendor/bin/phpunit
 ```
-
+テスト方法
+'''
+docker-compose exec mysql bash
+php artisan test
+'''
 
 ## 5. 使用技術(実行環境)
 

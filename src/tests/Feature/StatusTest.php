@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\DatabaseSeeder;
 use Tests\TestCase;
-use App\Models\Staff;
 
 class StatusTest extends TestCase
 {
@@ -26,7 +25,7 @@ class StatusTest extends TestCase
     public function  test_non_working_hours_is_displayed()
     {
 
-        $staff = Staff::find(1);
+        $staff = \App\Models\Staff::factory()->create();
         $response = $this->actingAs($staff, 'staff')->get('/staff/attendance');
 
 

@@ -3,11 +3,9 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\DatabaseSeeder;
 use Tests\TestCase;
 use Carbon\Carbon;
-use App\Models\Staff;
 
 class DateTimeTest extends TestCase
 {
@@ -29,7 +27,7 @@ class DateTimeTest extends TestCase
     public function  test_current_date_time_is_displayed_correctly()
     {
 
-        $staff = Staff::find(1);
+        $staff = \App\Models\Staff::factory()->create();
         $response = $this->actingAs($staff, 'staff')->get('/staff/attendance');
 
         $formatted_date = Carbon::now()->isoFormat('Y年M月D日（ddd）');
