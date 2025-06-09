@@ -71,20 +71,3 @@ Route::middleware(['auth:staff', 'verified'])->prefix('staff')->group(function (
 Route::get('/register', [StaffLoginController::class, 'register']);
 Route::post('/register', [StaffLoginController::class, 'store']);
 
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->name('verification.notice');
-
-Route::post('/email/verification-notification', function (Request $request) {
-    session()->get('unauthenticated_user')->sendEmailVerificationNotification();
-    session()->put('resent', true);
-    return back()->with('message', 'Verification link sent!');
-})->name('verification.send');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    $user = Staff::findOrFail($request->route('id'));
-    Auth::guard('staff')->login($user);
-    session()->forget('unauthenticated_user');
-    return redirect('staff/attendance');
-})->middleware(['signed'])->name('verification.verify');

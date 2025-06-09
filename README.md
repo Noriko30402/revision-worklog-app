@@ -70,18 +70,7 @@ composer require laravel-lang/lang:~7.0 --dev
 cp -r ./vendor/laravel-lang/lang/src/ja ./resources/lang/
 ```
 
-## 5. メール認証
-
-mailtrapというツールを使用しています。<br>
-以下のリンクから会員登録をしてください。　
-
-<https://mailtrap.io/>
-
-メールボックスのIntegrationsから 「laravel 7.x and 8.x」を選択し、<br>
-.envファイルのMAIL_MAILERからMAIL_ENCRYPTIONまでの項目をコピー＆ペーストしてください。<br>
-MAIL_FROM_ADDRESSは任意のメールアドレスを入力してください。　
-
-## 6. テストアカウント
+## 7. テストアカウント
 ### スタッフ<br>
 名前: 一般ユーザ<br>
 メールアドレス: general1@gmail.com　<br>
