@@ -109,7 +109,7 @@ php artisan migrate:fresh --env=testing
 ```
 テスト方法
 ```
-docker-compose exec mysql bash
+docker-compose exec php bash
 php artisan test
 ```
 
